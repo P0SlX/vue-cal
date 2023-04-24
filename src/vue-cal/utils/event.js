@@ -324,11 +324,11 @@ export default class EventUtils {
       // The array is smaller and smaller as we loop.
       _comparisonArray.shift()
 
-      if (!_cellOverlaps[e._eid]) _cellOverlaps[e._eid] = { overlaps: [], start: e.start, position: 0 }
+      if (!_cellOverlaps[e._eid]) _cellOverlaps[e._eid] = { overlaps: [], start: e.start, end: e.end, position: 0 }
       _cellOverlaps[e._eid].position = 0
 
       _comparisonArray.forEach(e2 => {
-        if (!_cellOverlaps[e2._eid]) _cellOverlaps[e2._eid] = { overlaps: [], start: e2.start, position: 0 }
+        if (!_cellOverlaps[e2._eid]) _cellOverlaps[e2._eid] = { overlaps: [], start: e2.start, end: e2.end, position: 0 }
 
         const eventIsInRange = this.eventInRange(e2, e.start, e.end)
         const eventsInSameTimeStep = options.overlapsPerTimeStep ? ud.datesInSameTimeStep(e.start, e2.start, options.timeStep) : 1
@@ -363,9 +363,9 @@ export default class EventUtils {
       const item = _cellOverlaps[id]
 
       // Calculate the position of each event in current streak (determines the CSS left property).
-      const overlapsRow = item.overlaps.map(id2 => ({ id: id2, start: _cellOverlaps[id2].start }))
-      overlapsRow.push({ id, start: item.start })
-      overlapsRow.sort((a, b) => a.start < b.start ? -1 : (a.start > b.start ? 1 : (a.id > b.id ? -1 : 1)))
+      const overlapsRow = item.overlaps.map(id2 => ({ id: id2, start: _cellOverlaps[id2].start, end: _cellOverlaps[id2].end }))
+      overlapsRow.push({ id, start: item.start, end: item.end })
+      overlapsRow.sort((a, b) => a.start < b.start ? -1 : (a.start > b.start ? 1 : (a.end < b.end ? 1 : -1)))
       item.position = overlapsRow.findIndex(e => e.id === id)
 
       longestStreak = Math.max(this.getOverlapsStreak(item, _cellOverlaps), longestStreak)

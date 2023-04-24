@@ -8,8 +8,13 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
-dist-ssr
+src/
+docs/
+index.html
+postcss.config.js
+pnpm-lock.yaml
+public
+vite.config.js
 *.local
 
 # Editor directories and files

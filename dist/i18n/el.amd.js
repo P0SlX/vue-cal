@@ -1,0 +1,5 @@
+/**
+  * vue-cal v4.8.1
+  * (c) 2023 Antoni Andre <antoniandre.web@gmail.com>
+  * @license MIT
+  */define(["exports"],function(e){"use strict";const n=["Δευτέρα","Τρίτη","Τετάρτη","Πέμπτη","Παρασκευή","Σάββατο","Κυριακή"],t=["Ιανουάριος","Φεβρουάριος","Μάρτιος","Απρίλιος","Μάιος","Ιούνιος","Ιούλιος","Αύγουστος","Σεπτέμβριος","Οκτώβριος","Νοέμβριος","Δεκέμβριος"],a=["Ιανουαρίου","Φεβρουαρίου","Μαρτίου","Απριλίου","Μαΐου","Ιουνίου","Ιουλίου","Αυγούστου","Σεπτεμβρίου","Οκτωβρίου","Νοεμβρίου","Δεκεμβρίου"],o="Έτη",c="Έτος",d="Μήνα",y="Εβδομάδα",m="Ημέρα",s="Σήμερα",l="Κανένα συμβάν",v="Ημερήσιο συμβάν",i="Διαγραφή",h="Δημιουργία συμβάντος",E="dddd D MMMMG YYYY",D="π.μ.",k="μ.μ.",w={weekDays:n,months:t,monthsGenitive:a,years:o,year:c,month:d,week:y,day:m,today:s,noEvent:l,allDay:v,deleteEvent:i,createEvent:h,dateFormat:E,am:D,pm:k};e.allDay=v,e.am=D,e.createEvent=h,e.dateFormat=E,e.day=m,e.default=w,e.deleteEvent=i,e.month=d,e.months=t,e.monthsGenitive=a,e.noEvent=l,e.pm=k,e.today=s,e.week=y,e.weekDays=n,e.year=c,e.years=o,Object.defineProperty(e,Symbol.toStringTag,{value:"Module"})});

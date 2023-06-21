@@ -1,6 +1,974 @@
-var e=Object.defineProperty,t=(t,i,s)=>(((t,i,s)=>{i in t?e(t,i,{enumerable:!0,configurable:!0,writable:!0,value:s}):t[i]=s})(t,"symbol"!=typeof i?i+"":i,s),s);import{openBlock as i,createElementBlock as s,Fragment as n,renderList as a,normalizeClass as l,normalizeStyle as o,createVNode as r,Transition as d,withCtx as u,createElementVNode as h,renderSlot as c,toDisplayString as v,createCommentVNode as m,createTextVNode as p,resolveComponent as w,createBlock as y,resolveDynamicComponent as D,createSlots as g,withKeys as f,withModifiers as _,TransitionGroup as b,normalizeProps as k,mergeProps as M}from"vue";
+var oe = Object.defineProperty;
+var re = (e, t, i) => t in e ? oe(e, t, { enumerable: !0, configurable: !0, writable: !0, value: i }) : e[t] = i;
+var W = (e, t, i) => (re(e, typeof t != "symbol" ? t + "" : t, i), i);
+import { openBlock as h, createElementBlock as c, Fragment as T, renderList as S, normalizeClass as b, normalizeStyle as $, createVNode as U, Transition as R, withCtx as g, createElementVNode as k, renderSlot as w, toDisplayString as f, createCommentVNode as m, createTextVNode as M, resolveComponent as j, createBlock as H, resolveDynamicComponent as de, createSlots as X, withKeys as Z, withModifiers as L, TransitionGroup as ue, normalizeProps as J, mergeProps as Q } from "vue";
 /**
   * vue-cal v4.8.1
   * (c) 2023 Antoni Andre <antoniandre.web@gmail.com>
   * @license MIT
-  */let T,E,C,S,O={},$={};class x{constructor(e){t(this,"_vuecal",null),t(this,"selectCell",((e=!1,t,i)=>{this._vuecal.$emit("cell-click",i?{date:t,split:i}:t),this._vuecal.clickToNavigate||e?this._vuecal.switchToNarrowerView():this._vuecal.dblclickToNavigate&&"ontouchstart"in window&&(this._vuecal.domEvents.dblTapACell.taps++,setTimeout((()=>this._vuecal.domEvents.dblTapACell.taps=0),this._vuecal.domEvents.dblTapACell.timeout),this._vuecal.domEvents.dblTapACell.taps>=2&&(this._vuecal.domEvents.dblTapACell.taps=0,this._vuecal.switchToNarrowerView(),this._vuecal.$emit("cell-dblclick",i?{date:t,split:i}:t)))})),t(this,"keyPressEnterCell",((e,t)=>{this._vuecal.$emit("cell-keypress-enter",t?{date:e,split:t}:e),this._vuecal.switchToNarrowerView()})),t(this,"getPosition",(e=>{const{left:t,top:i}=this._vuecal.cellsEl.getBoundingClientRect(),{clientX:s,clientY:n}="ontouchstart"in window&&e.touches?e.touches[0]:e;return{x:s-t,y:n-i}})),t(this,"minutesAtCursor",(e=>{let t=0,i={x:0,y:0};const{timeStep:s,timeCellHeight:n,timeFrom:a}=this._vuecal.$props;return"number"==typeof e?t=e:"object"==typeof e&&(i=this.getPosition(e),t=Math.round(i.y*s/parseInt(n)+a)),{minutes:Math.max(Math.min(t,1440),0),cursorCoords:i}})),this._vuecal=e}}const W=1440;let j,H,V;class A{constructor(e,i){t(this,"_vuecal",null),t(this,"eventDefaults",{_eid:null,start:"",startTimeMinutes:0,end:"",endTimeMinutes:0,title:"",content:"",background:!1,allDay:!1,segments:null,repeat:null,daysCount:1,deletable:!0,deleting:!1,titleEditable:!0,resizable:!0,resizing:!1,draggable:!0,dragging:!1,draggingStatic:!1,focused:!1,class:""}),this._vuecal=e,j=i}createAnEvent(e,t,i){if("string"==typeof e&&(e=j.stringToDate(e)),!(e instanceof Date))return!1;const s=j.dateToMinutes(e),n=s+(t=1*t||120),a=j.addMinutes(new Date(e),t);i.end&&("string"==typeof i.end&&(i.end=j.stringToDate(i.end)),i.endTimeMinutes=j.dateToMinutes(i.end));const l={...this.eventDefaults,_eid:`${this._vuecal._.uid}_${this._vuecal.eventIdIncrement++}`,start:e,startTimeMinutes:s,end:a,endTimeMinutes:n,segments:null,...i};return"function"!=typeof this._vuecal.onEventCreate||this._vuecal.onEventCreate(l,(()=>this.deleteAnEvent(l)))?(l.startDateF!==l.endDateF&&(l.daysCount=j.countDays(l.start,l.end)),this._vuecal.mutableEvents.push(l),this._vuecal.addEventsToView([l]),this._vuecal.emitWithEvent("event-create",l),this._vuecal.$emit("event-change",{event:this._vuecal.cleanupEvent(l),originalEvent:null}),l):void 0}addEventSegment(e){e.segments||(e.segments={},e.segments[j.formatDateLite(e.start)]={start:e.start,startTimeMinutes:e.startTimeMinutes,endTimeMinutes:W,isFirstDay:!0,isLastDay:!1});const t=e.segments[j.formatDateLite(e.end)];t&&(t.isLastDay=!1,t.endTimeMinutes=W);const i=j.addDays(e.end,1),s=j.formatDateLite(i);return i.setHours(0,0,0,0),e.segments[s]={start:i,startTimeMinutes:0,endTimeMinutes:e.endTimeMinutes,isFirstDay:!1,isLastDay:!0},e.end=j.addMinutes(i,e.endTimeMinutes),e.daysCount=Object.keys(e.segments).length,s}removeEventSegment(e){let t=Object.keys(e.segments).length;if(t<=1)return j.formatDateLite(e.end);delete e.segments[j.formatDateLite(e.end)],t--;const i=j.subtractDays(e.end,1),s=j.formatDateLite(i),n=e.segments[s];return t?n&&(n.isLastDay=!0,n.endTimeMinutes=e.endTimeMinutes):e.segments=null,e.daysCount=t||1,e.end=i,s}createEventSegments(e,t,i){const s=t.getTime(),n=i.getTime();let a,l,o,r=e.start.getTime(),d=e.end.getTime(),u=!1;for(!e.end.getHours()&&!e.end.getMinutes()&&(d-=1e3),e.segments={},e.repeat?(a=s,l=Math.min(n,e.repeat.until?j.stringToDate(e.repeat.until).getTime():n)):(a=Math.max(s,r),l=Math.min(n,d));a<=l;){let t=!1;const i=j.addDays(new Date(a),1).setHours(0,0,0,0);let s,n,h,c;if(e.repeat){const i=new Date(a),l=j.formatDateLite(i);(u||e.occurrences&&e.occurrences[l])&&(u||(r=e.occurrences[l].start,o=new Date(r).setHours(0,0,0,0),d=e.occurrences[l].end),u=!0,t=!0),s=a===o,n=l===j.formatDateLite(new Date(d)),h=new Date(s?r:a),c=j.formatDateLite(h),n&&(u=!1)}else t=!0,s=a===r,n=l===d&&i>l,h=s?e.start:new Date(a),c=j.formatDateLite(s?e.start:h);t&&(e.segments[c]={start:h,startTimeMinutes:s?e.startTimeMinutes:0,endTimeMinutes:n?e.endTimeMinutes:W,isFirstDay:s,isLastDay:n}),a=i}return e}deleteAnEvent(e){this._vuecal.emitWithEvent("event-delete",e),this._vuecal.mutableEvents=this._vuecal.mutableEvents.filter((t=>t._eid!==e._eid)),this._vuecal.view.events=this._vuecal.view.events.filter((t=>t._eid!==e._eid))}checkCellOverlappingEvents(e,t){V=e.slice(0),H={},e.forEach((e=>{V.shift(),H[e._eid]||(H[e._eid]={overlaps:[],start:e.start,end:e.end,position:0}),H[e._eid].position=0,V.forEach((i=>{H[i._eid]||(H[i._eid]={overlaps:[],start:i.start,end:i.end,position:0});const s=this.eventInRange(i,e.start,e.end),n=t.overlapsPerTimeStep?j.datesInSameTimeStep(e.start,i.start,t.timeStep):1;if(e.background||e.allDay||i.background||i.allDay||!s||!n){let t,s;(t=(H[e._eid]||{overlaps:[]}).overlaps.indexOf(i._eid))>-1&&H[e._eid].overlaps.splice(t,1),(s=(H[i._eid]||{overlaps:[]}).overlaps.indexOf(e._eid))>-1&&H[i._eid].overlaps.splice(s,1),H[i._eid].position--}else H[e._eid].overlaps.push(i._eid),H[e._eid].overlaps=[...new Set(H[e._eid].overlaps)],H[i._eid].overlaps.push(e._eid),H[i._eid].overlaps=[...new Set(H[i._eid].overlaps)],H[i._eid].position++}))}));let i=0;for(const e in H){const t=H[e],s=t.overlaps.map((e=>({id:e,start:H[e].start,end:H[e].end})));s.push({id:e,start:t.start,end:t.end}),s.sort(((e,t)=>e.start<t.start?-1:e.start>t.start||e.end<t.end?1:-1)),t.position=s.findIndex((t=>t.id===e)),i=Math.max(this.getOverlapsStreak(t,H),i)}return[H,i]}getOverlapsStreak(e,t={}){let i=e.overlaps.length+1,s=[];return e.overlaps.forEach((i=>{s.includes(i)||e.overlaps.filter((e=>e!==i)).forEach((e=>{t[e].overlaps.includes(i)||s.push(e)}))})),s=[...new Set(s)],i-=s.length,i}eventInRange(e,t,i){if(e.allDay||!this._vuecal.time){const s=new Date(e.start).setHours(0,0,0,0);return new Date(e.end).setHours(23,59,0,0)>=new Date(t).setHours(0,0,0,0)&&s<=new Date(i).setHours(0,0,0,0)}const s=e.start.getTime(),n=e.end.getTime();return s<i.getTime()&&n>t.getTime()}}const Y={class:"vuecal__flex vuecal__weekdays-headings"},L=["onClick"],F={class:"vuecal__flex weekday-label",grow:""},B={class:"full"},N={class:"small"},z={class:"xsmall"},I={key:0},P={key:0,class:"vuecal__flex vuecal__split-days-headers",grow:""};const U=(e,t)=>{const i=e.__vccOpts||e;for(const[e,s]of t)i[e]=s;return i},R=U({inject:["vuecal","utils","view"],props:{transitionDirection:{type:String,default:"right"},weekDays:{type:Array,default:()=>[]},switchToNarrowerView:{type:Function,default:()=>{}}},methods:{selectCell(e,t){e.getTime()!==this.view.selectedDate.getTime()&&(this.view.selectedDate=e),this.utils.cell.selectCell(!1,e,t)},cleanupHeading:e=>({label:e.full,date:e.date,...e.today?{today:e.today}:{}})},computed:{headings(){if(!["month","week"].includes(this.view.id))return[];let e=!1;return this.weekDays.map(((t,i)=>{const s=this.utils.date.addDays(this.view.startDate,this.vuecal.startWeekOnSunday?i-1:i);return{hide:t.hide,full:t.label,small:t.short||t.label.substr(0,3),xsmall:t.short||t.label.substr(0,1),..."week"===this.view.id?{dayOfMonth:s.getDate(),date:s,today:!e&&this.utils.date.isToday(s)&&!e++}:{}}}))},cellWidth(){return 100/(7-this.weekDays.reduce(((e,t)=>e+t.hide),0))},weekdayCellStyles(){return{...this.vuecal.hideWeekdays.length?{width:`${this.cellWidth}%`}:{}}},cellHeadingsClickable(){return"week"===this.view.id&&(this.vuecal.clickToNavigate||this.vuecal.dblclickToNavigate)}}},[["render",function(e,t,w,y,D,g){return i(),s("div",Y,[(i(!0),s(n,null,a(g.headings,((y,D)=>(i(),s(n,{key:D},[y.hide?m("",!0):(i(),s("div",{key:0,class:l(["vuecal__flex vuecal__heading",{today:y.today,clickable:g.cellHeadingsClickable}]),style:o(g.weekdayCellStyles),onClick:e=>"week"===g.view.id&&g.selectCell(y.date,e),onDblclick:t[0]||(t[0]=e=>"week"===g.view.id&&g.vuecal.dblclickToNavigate&&w.switchToNarrowerView())},[r(d,{name:`slide-fade--${w.transitionDirection}`,appear:g.vuecal.transitions},{default:u((()=>[(i(),s("div",{class:"vuecal__flex",column:"",key:!!g.vuecal.transitions&&`${D}-${y.dayOfMonth}`},[h("div",F,[c(e.$slots,"weekday-heading",{heading:g.cleanupHeading(y),view:g.view},(()=>[h("span",B,v(y.full),1),h("span",N,v(y.small),1),h("span",z,v(y.xsmall),1),y.dayOfMonth?(i(),s("span",I," "+v(y.dayOfMonth),1)):m("",!0)]))]),g.vuecal.hasSplits&&g.vuecal.stickySplitLabels?(i(),s("div",P,[(i(!0),s(n,null,a(g.vuecal.daySplits,((t,n)=>(i(),s("div",{class:l(["day-split-header",t.class||!1]),key:n},[c(e.$slots,"split-label",{split:t,view:g.view},(()=>[p(v(t.label),1)]))],2)))),128))])):m("",!0)]))])),_:2},1032,["name","appear"])],46,L))],64)))),128))])}]]),q={class:"vuecal__header"},K={key:0,class:"vuecal__flex vuecal__menu",role:"tablist","aria-label":"Calendar views navigation"},X=["onDragenter","onDragleave","onClick","aria-label"],G={key:1,class:"vuecal__title-bar"},Z=["aria-label"],J={class:"vuecal__flex vuecal__title",grow:""},Q=["aria-label"],ee={key:0,class:"vuecal__flex vuecal__split-days-headers"};const te=U({inject:["vuecal","previous","next","switchView","updateSelectedDate","modules","view"],components:{WeekdaysHeadings:R},props:{options:{type:Object,default:()=>({})},editEvents:{type:Object,required:!0},hasSplits:{type:[Boolean,Number],default:!1},daySplits:{type:Array,default:()=>[]},viewProps:{type:Object,default:()=>({})},weekDays:{type:Array,default:()=>[]},switchToNarrowerView:{type:Function,default:()=>{}}},data:()=>({highlightedControl:null}),methods:{goToToday(){this.updateSelectedDate(new Date((new Date).setHours(0,0,0,0)))},switchToBroaderView(){this.transitionDirection="left",this.broaderView&&this.switchView(this.broaderView)}},computed:{transitionDirection:{get(){return this.vuecal.transitionDirection},set(e){this.vuecal.transitionDirection=e}},broaderView(){const{enabledViews:e}=this.vuecal;return e[e.indexOf(this.view.id)-1]},showDaySplits(){return"day"===this.view.id&&this.hasSplits&&this.options.stickySplitLabels&&!this.options.minSplitWidth},dnd(){return this.modules.dnd}}},[["render",function(e,t,o,f,_,b){const k=w("weekdays-headings");return i(),s("div",q,[o.options.hideViewSelector?m("",!0):(i(),s("div",K,[(i(!0),s(n,null,a(o.viewProps.views,((t,a)=>(i(),s(n,{key:a},[t.enabled?(i(),s("button",{key:0,class:l(["vuecal__view-btn",{"vuecal__view-btn--active":b.view.id===a,"vuecal__view-btn--highlighted":e.highlightedControl===a}]),type:"button",onDragenter:t=>o.editEvents.drag&&b.dnd&&b.dnd.viewSelectorDragEnter(t,a,e.$data),onDragleave:t=>o.editEvents.drag&&b.dnd&&b.dnd.viewSelectorDragLeave(t,a,e.$data),onClick:e=>b.switchView(a,null,!0),"aria-label":`${t.label} view`},v(t.label),43,X)):m("",!0)],64)))),128))])),o.options.hideTitleBar?m("",!0):(i(),s("div",G,[h("button",{class:l(["vuecal__arrow vuecal__arrow--prev",{"vuecal__arrow--highlighted":"previous"===e.highlightedControl}]),type:"button",onClick:t[0]||(t[0]=(...e)=>b.previous&&b.previous(...e)),onDragenter:t[1]||(t[1]=t=>o.editEvents.drag&&b.dnd&&b.dnd.viewSelectorDragEnter(t,"previous",e.$data)),onDragleave:t[2]||(t[2]=t=>o.editEvents.drag&&b.dnd&&b.dnd.viewSelectorDragLeave(t,"previous",e.$data)),"aria-label":`Previous ${b.view.id}`},[c(e.$slots,"arrow-prev")],42,Z),h("div",J,[r(d,{name:o.options.transitions?`slide-fade--${b.transitionDirection}`:""},{default:u((()=>[(i(),y(D(b.broaderView?"button":"span"),{type:!!b.broaderView&&"button",key:`${b.view.id}${b.view.startDate.toString()}`,onClick:t[3]||(t[3]=e=>!!b.broaderView&&b.switchToBroaderView()),"aria-label":!!b.broaderView&&`Go to ${b.broaderView} view`},{default:u((()=>[c(e.$slots,"title")])),_:3},8,["type","aria-label"]))])),_:3},8,["name"])]),o.options.todayButton?(i(),s("button",{key:0,class:l(["vuecal__today-btn",{"vuecal__today-btn--highlighted":"today"===e.highlightedControl}]),type:"button",onClick:t[4]||(t[4]=(...e)=>b.goToToday&&b.goToToday(...e)),onDragenter:t[5]||(t[5]=t=>o.editEvents.drag&&b.dnd&&b.dnd.viewSelectorDragEnter(t,"today",e.$data)),onDragleave:t[6]||(t[6]=t=>o.editEvents.drag&&b.dnd&&b.dnd.viewSelectorDragLeave(t,"today",e.$data)),"aria-label":"Today"},[c(e.$slots,"today-button")],34)):m("",!0),h("button",{class:l(["vuecal__arrow vuecal__arrow--next",{"vuecal__arrow--highlighted":"next"===e.highlightedControl}]),type:"button",onClick:t[7]||(t[7]=(...e)=>b.next&&b.next(...e)),onDragenter:t[8]||(t[8]=t=>o.editEvents.drag&&b.dnd&&b.dnd.viewSelectorDragEnter(t,"next",e.$data)),onDragleave:t[9]||(t[9]=t=>o.editEvents.drag&&b.dnd&&b.dnd.viewSelectorDragLeave(t,"next",e.$data)),"aria-label":`Next ${b.view.id}`},[c(e.$slots,"arrow-next")],42,Q)])),o.viewProps.weekDaysInHeader?(i(),y(k,{key:2,"week-days":o.weekDays,"transition-direction":b.transitionDirection,"switch-to-narrower-view":o.switchToNarrowerView},g({_:2},[e.$slots["weekday-heading"]?{name:"weekday-heading",fn:u((({heading:t,view:i})=>[c(e.$slots,"weekday-heading",{heading:t,view:i})])),key:"0"}:void 0,e.$slots["split-label"]?{name:"split-label",fn:u((({split:t})=>[c(e.$slots,"split-label",{split:t,view:b.view})])),key:"1"}:void 0]),1032,["week-days","transition-direction","switch-to-narrower-view"])):m("",!0),r(d,{name:`slide-fade--${b.transitionDirection}`},{default:u((()=>[b.showDaySplits?(i(),s("div",ee,[(i(!0),s(n,null,a(o.daySplits,((t,n)=>(i(),s("div",{class:l(["day-split-header",t.class||!1]),key:n},[c(e.$slots,"split-label",{split:t,view:b.view.id},(()=>[p(v(t.label),1)]))],2)))),128))])):m("",!0)])),_:3},8,["name"])])}]]),ie=["draggable"];const se={inject:["vuecal","utils","modules","view","domEvents","editEvents"],props:{cellFormattedDate:{type:String,default:""},event:{type:Object,default:()=>({})},cellEvents:{type:Array,default:()=>[]},overlaps:{type:Array,default:()=>[]},eventPosition:{type:Number,default:0},overlapsStreak:{type:Number,default:0},allDay:{type:Boolean,default:!1}},data:()=>({touch:{dragThreshold:30,startX:0,startY:0,dragged:!1}}),methods:{onMouseDown(e,t=!1){if("ontouchstart"in window&&!t)return!1;const{clickHoldAnEvent:i,focusAnEvent:s,resizeAnEvent:n,dragAnEvent:a}=this.domEvents;if(s._eid===this.event._eid&&i._eid===this.event._eid)return!0;this.focusEvent(),i._eid=null,this.vuecal.editEvents.delete&&this.event.deletable&&(i.timeoutId=setTimeout((()=>{!n._eid&&!a._eid&&(i._eid=this.event._eid,this.event.deleting=!0)}),i.timeout))},onMouseUp(e){this.domEvents.focusAnEvent._eid===this.event._eid&&!this.touch.dragged&&(this.domEvents.focusAnEvent.mousedUp=!0),this.touch.dragged=!1},onMouseEnter(e){e.preventDefault(),this.vuecal.emitWithEvent("event-mouse-enter",this.event)},onMouseLeave(e){e.preventDefault(),this.vuecal.emitWithEvent("event-mouse-leave",this.event)},onTouchMove(e){if("function"!=typeof this.vuecal.onEventClick)return;const{clientX:t,clientY:i}=e.touches[0],{startX:s,startY:n,dragThreshold:a}=this.touch;(Math.abs(t-s)>a||Math.abs(i-n)>a)&&(this.touch.dragged=!0)},onTouchStart(e){this.touch.startX=e.touches[0].clientX,this.touch.startY=e.touches[0].clientY,this.onMouseDown(e,!0)},onEnterKeypress(e){if("function"==typeof this.vuecal.onEventClick)return this.vuecal.onEventClick(this.event,e)},onDblClick(e){if("function"==typeof this.vuecal.onEventDblclick)return this.vuecal.onEventDblclick(this.event,e)},onDragStart(e){this.dnd&&this.dnd.eventDragStart(e,this.event)},onDragEnd(){this.dnd&&this.dnd.eventDragEnd(this.event)},onResizeHandleMouseDown(){this.focusEvent(),this.domEvents.dragAnEvent._eid=null,this.domEvents.resizeAnEvent=Object.assign(this.domEvents.resizeAnEvent,{_eid:this.event._eid,start:(this.segment||this.event).start,split:this.event.split||null,segment:!!this.segment&&this.utils.date.formatDateLite(this.segment.start),originalEnd:new Date((this.segment||this.event).end),originalEndTimeMinutes:this.event.endTimeMinutes}),this.event.resizing=!0},deleteEvent(e=!1){if("ontouchstart"in window&&!e)return!1;this.utils.event.deleteAnEvent(this.event)},touchDeleteEvent(e){this.deleteEvent(!0)},cancelDeleteEvent(){this.event.deleting=!1},focusEvent(){const{focusAnEvent:e}=this.domEvents,t=e._eid;if(t!==this.event._eid){if(t){const e=this.view.events.find((e=>e._eid===t));e&&(e.focused=!1)}this.vuecal.cancelDelete(),this.vuecal.emitWithEvent("event-focus",this.event),e._eid=this.event._eid,this.event.focused=!0}}},computed:{eventDimensions(){const{startTimeMinutes:e,endTimeMinutes:t}=this.segment||this.event;let i=e-this.vuecal.timeFrom;const s=Math.max(Math.round(i*this.vuecal.timeCellHeight/this.vuecal.timeStep),0);i=Math.min(t,this.vuecal.timeTo)-this.vuecal.timeFrom;const n=Math.round(i*this.vuecal.timeCellHeight/this.vuecal.timeStep);return{top:s,height:Math.max(n-s,5)}},eventStyles(){if(this.event.allDay||!this.vuecal.time||!this.event.endTimeMinutes||"month"===this.view.id||this.allDay)return{};let e=100/Math.min(this.overlaps.length+1,this.overlapsStreak),t=100/(this.overlaps.length+1)*this.eventPosition;this.vuecal.minEventWidth&&e<this.vuecal.minEventWidth&&(e=this.vuecal.minEventWidth,t=(100-this.vuecal.minEventWidth)/this.overlaps.length*this.eventPosition);const{top:i,height:s}=this.eventDimensions;return{top:`${i}px`,height:`${s}px`,width:`${e}%`,left:this.event.left&&`${this.event.left}px`||`${t}%`}},eventClasses(){const{isFirstDay:e,isLastDay:t}=this.segment||{};return{[this.event.class]:!!this.event.class,"vuecal__event--focus":this.event.focused,"vuecal__event--resizing":this.event.resizing,"vuecal__event--background":this.event.background,"vuecal__event--deletable":this.event.deleting,"vuecal__event--all-day":this.event.allDay,"vuecal__event--dragging":!this.event.draggingStatic&&this.event.dragging,"vuecal__event--static":this.event.dragging&&this.event.draggingStatic,"vuecal__event--multiple-days":!!this.segment,"event-start":this.segment&&e&&!t,"event-middle":this.segment&&!e&&!t,"event-end":this.segment&&t&&!e}},segment(){return this.event.segments&&this.event.segments[this.cellFormattedDate]||null},draggable(){const{draggable:e,background:t,daysCount:i}=this.event;return this.vuecal.editEvents.drag&&e&&!t&&1===i},resizable(){const{editEvents:e,time:t}=this.vuecal;return e.resize&&this.event.resizable&&t&&!this.allDay&&(!this.segment||this.segment&&this.segment.isLastDay)&&"month"!==this.view.id},dnd(){return this.modules.dnd}}},ne=["data-split","aria-label","onTouchstart","onMousedown","onDragover","onDrop"],ae={key:0,class:"cell-time-labels"},le=["innerHTML"],oe={key:2,class:"vuecal__cell-events"},re=["title"];const de=U({inject:["vuecal","utils","modules","view","domEvents"],components:{Event:U(se,[["render",function(e,t,n,a,r,d){return i(),s("div",{class:l(["vuecal__event",d.eventClasses]),style:o(d.eventStyles),tabindex:"0",onFocus:t[4]||(t[4]=(...e)=>d.focusEvent&&d.focusEvent(...e)),onKeypress:t[5]||(t[5]=f(_(((...e)=>d.onEnterKeypress&&d.onEnterKeypress(...e)),["stop"]),["enter"])),onMouseenter:t[6]||(t[6]=(...e)=>d.onMouseEnter&&d.onMouseEnter(...e)),onMouseleave:t[7]||(t[7]=(...e)=>d.onMouseLeave&&d.onMouseLeave(...e)),onTouchstart:t[8]||(t[8]=_(((...e)=>d.onTouchStart&&d.onTouchStart(...e)),["stop"])),onMousedown:t[9]||(t[9]=e=>d.onMouseDown(e)),onMouseup:t[10]||(t[10]=(...e)=>d.onMouseUp&&d.onMouseUp(...e)),onTouchend:t[11]||(t[11]=(...e)=>d.onMouseUp&&d.onMouseUp(...e)),onTouchmove:t[12]||(t[12]=(...e)=>d.onTouchMove&&d.onTouchMove(...e)),onDblclick:t[13]||(t[13]=(...e)=>d.onDblClick&&d.onDblClick(...e)),draggable:d.draggable,onDragstart:t[14]||(t[14]=e=>d.draggable&&d.onDragStart(e)),onDragend:t[15]||(t[15]=e=>d.draggable&&d.onDragEnd())},[d.vuecal.editEvents.delete&&n.event.deletable?(i(),s("div",{key:0,class:"vuecal__event-delete",onClick:t[0]||(t[0]=_(((...e)=>d.deleteEvent&&d.deleteEvent(...e)),["stop"])),onTouchstart:t[1]||(t[1]=_(((...e)=>d.touchDeleteEvent&&d.touchDeleteEvent(...e)),["stop"]))},v(d.vuecal.texts.deleteEvent),33)):m("",!0),c(e.$slots,"event",{event:n.event,view:d.view.id}),d.resizable?(i(),s("div",{key:1,class:"vuecal__event-resize-handle",contenteditable:"false",onMousedown:t[2]||(t[2]=_(((...e)=>d.onResizeHandleMouseDown&&d.onResizeHandleMouseDown(...e)),["stop","prevent"])),onTouchstart:t[3]||(t[3]=_(((...e)=>d.onResizeHandleMouseDown&&d.onResizeHandleMouseDown(...e)),["stop","prevent"]))},null,32)):m("",!0)],46,ie)}]])},props:{options:{type:Object,default:()=>({})},editEvents:{type:Object,required:!0},data:{type:Object,required:!0},cellSplits:{type:Array,default:()=>[]},minTimestamp:{type:[Number,null],default:null},maxTimestamp:{type:[Number,null],default:null},cellWidth:{type:[Number,Boolean],default:!1},allDay:{type:Boolean,default:!1}},data:()=>({cellOverlaps:{},cellOverlapsStreak:1,timeAtCursor:null,highlighted:!1,highlightedSplit:null}),methods:{getSplitAtCursor({target:e}){let t=e.classList.contains("vuecal__cell-split")?e:this.vuecal.findAncestor(e,"vuecal__cell-split");return t&&(t=t.attributes["data-split"].value,parseInt(t).toString()===t.toString()&&(t=parseInt(t))),t||null},splitClasses(e){return{"vuecal__cell-split":!0,"vuecal__cell-split--highlighted":this.highlightedSplit===e.id,[e.class]:!!e.class}},checkCellOverlappingEvents(){this.options.time&&this.eventsCount&&!this.splitsCount&&(1===this.eventsCount?(this.cellOverlaps=[],this.cellOverlapsStreak=1):[this.cellOverlaps,this.cellOverlapsStreak]=this.utils.event.checkCellOverlappingEvents(this.events,this.options))},isDOMElementAnEvent(e){return this.vuecal.isDOMElementAnEvent(e)},selectCell(e,t=!1){const i=this.splitsCount?this.getSplitAtCursor(e):null;this.utils.cell.selectCell(t,this.timeAtCursor,i),this.timeAtCursor=null},onCellkeyPressEnter(e){this.isSelected||this.onCellFocus(e);const t=this.splitsCount?this.getSplitAtCursor(e):null;this.utils.cell.keyPressEnterCell(this.timeAtCursor,t),this.timeAtCursor=null},onCellFocus(e){if(!this.isSelected&&!this.isDisabled){this.isSelected=this.data.startDate;const t=this.splitsCount?this.getSplitAtCursor(e):null,i=this.timeAtCursor||this.data.startDate;this.vuecal.$emit("cell-focus",t?{date:i,split:t}:i)}},onCellMouseDown(e,t=null,i=!1){if("ontouchstart"in window&&!i)return!1;this.isSelected||this.onCellFocus(e);const{clickHoldACell:s,focusAnEvent:n}=this.domEvents;this.domEvents.cancelClickEventCreation=!1,s.eventCreated=!1,this.timeAtCursor=new Date(this.data.startDate);const{minutes:a,cursorCoords:{y:l}}=this.vuecal.minutesAtCursor(e);this.timeAtCursor.setMinutes(a);const o=this.isDOMElementAnEvent(e.target);!o&&n._eid&&((this.view.events.find((e=>e._eid===n._eid))||{}).focused=!1),this.editEvents.create&&!o&&this.setUpEventCreation(e,l)},setUpEventCreation(e,t){if(this.options.dragToCreateEvent&&["week","day"].includes(this.view.id)){const{dragCreateAnEvent:i}=this.domEvents;if(i.startCursorY=t,i.split=this.splitsCount?this.getSplitAtCursor(e):null,i.start=this.timeAtCursor,this.options.snapToTime){let e=60*this.timeAtCursor.getHours()+this.timeAtCursor.getMinutes();const t=e+this.options.snapToTime/2;e=t-t%this.options.snapToTime,i.start.setHours(0,e,0,0)}}else this.options.cellClickHold&&["month","week","day"].includes(this.view.id)&&this.setUpCellHoldTimer(e)},setUpCellHoldTimer(e){const{clickHoldACell:t}=this.domEvents;t.cellId=`${this.vuecal._.uid}_${this.data.formattedDate}`,t.split=this.splitsCount?this.getSplitAtCursor(e):null,t.timeoutId=setTimeout((()=>{if(t.cellId&&!this.domEvents.cancelClickEventCreation){const{_eid:e}=this.utils.event.createAnEvent(this.timeAtCursor,null,t.split?{split:t.split}:{});t.eventCreated=e}}),t.timeout)},onCellTouchStart(e,t=null){this.onCellMouseDown(e,t,!0)},onCellClick(e){this.isDOMElementAnEvent(e.target)||this.selectCell(e)},onCellDblClick(e){const t=new Date(this.data.startDate);t.setMinutes(this.vuecal.minutesAtCursor(e).minutes);const i=this.splitsCount?this.getSplitAtCursor(e):null;this.vuecal.$emit("cell-dblclick",i?{date:t,split:i}:t),this.options.dblclickToNavigate&&this.vuecal.switchToNarrowerView()},onCellContextMenu(e){e.stopPropagation(),e.preventDefault();const t=new Date(this.data.startDate),{cursorCoords:i,minutes:s}=this.vuecal.minutesAtCursor(e);t.setMinutes(s);const n=this.splitsCount?this.getSplitAtCursor(e):null;this.vuecal.$emit("cell-contextmenu",{date:t,...i,...n||{},e:e})}},computed:{dnd(){return this.modules.dnd},nowInMinutes(){return this.utils.date.dateToMinutes(this.vuecal.now)},isBeforeMinDate(){return null!==this.minTimestamp&&this.minTimestamp>this.data.endDate.getTime()},isAfterMaxDate(){return this.maxTimestamp&&this.maxTimestamp<this.data.startDate.getTime()},isDisabled(){const{disableDays:e}=this.options,{isYearsOrYearView:t}=this.vuecal;return!(!e.length||!e.includes(this.data.formattedDate)||t)||(this.isBeforeMinDate||this.isAfterMaxDate)},isSelected:{get(){let e=!1;const{selectedDate:t}=this.view;return e="years"===this.view.id?t.getFullYear()===this.data.startDate.getFullYear():"year"===this.view.id?t.getFullYear()===this.data.startDate.getFullYear()&&t.getMonth()===this.data.startDate.getMonth():t.getTime()===this.data.startDate.getTime(),e},set(e){this.view.selectedDate=e,this.vuecal.$emit("update:selected-date",this.view.selectedDate)}},isWeekOrDayView(){return["week","day"].includes(this.view.id)},transitionDirection(){return this.vuecal.transitionDirection},specialHours(){return this.data.specialHours.map((e=>{let{from:t,to:i}=e;return t=Math.max(t,this.options.timeFrom),i=Math.min(i,this.options.timeTo),{...e,height:(i-t)*this.timeScale,top:(t-this.options.timeFrom)*this.timeScale}}))},events(){const{startDate:e,endDate:t}=this.data;let i=[];if(!["years","year"].includes(this.view.id)||this.options.eventsCountOnYearView){if(i=this.view.events.slice(0),"month"===this.view.id&&i.push(...this.view.outOfScopeEvents),i=i.filter((i=>this.utils.event.eventInRange(i,e,t))),this.options.showAllDayEvents&&"month"!==this.view.id&&(i=i.filter((e=>!!e.allDay===this.allDay))),this.options.time&&this.isWeekOrDayView&&!this.allDay){const{timeFrom:e,timeTo:t}=this.options;i=i.filter((i=>{const s=i.daysCount>1&&i.segments[this.data.formattedDate]||{},n=1===i.daysCount&&i.startTimeMinutes<t&&i.endTimeMinutes>e,a=i.daysCount>1&&s.startTimeMinutes<t&&s.endTimeMinutes>e;return i.allDay||n||a||!1}))}this.options.time&&this.isWeekOrDayView&&!(this.options.showAllDayEvents&&this.allDay)&&i.sort(((e,t)=>e.start<t.start?-1:1)),this.cellSplits.length||this.$nextTick(this.checkCellOverlappingEvents)}return i},eventsCount(){return this.events.length},splits(){return this.cellSplits.map(((e,t)=>{const i=this.events.filter((t=>t.split===e.id)),[s,n]=this.utils.event.checkCellOverlappingEvents(i.filter((e=>!e.background&&!e.allDay)),this.options);return{...e,overlaps:s,overlapsStreak:n,events:i}}))},splitsCount(){return this.splits.length},cellClasses(){return{[this.data.class]:!!this.data.class,"vuecal__cell--current":this.data.current,"vuecal__cell--today":this.data.today,"vuecal__cell--out-of-scope":this.data.outOfScope,"vuecal__cell--before-min":this.isDisabled&&this.isBeforeMinDate,"vuecal__cell--after-max":this.isDisabled&&this.isAfterMaxDate,"vuecal__cell--disabled":this.isDisabled,"vuecal__cell--selected":this.isSelected,"vuecal__cell--highlighted":this.highlighted,"vuecal__cell--has-splits":this.splitsCount,"vuecal__cell--has-events":this.eventsCount}},cellStyles(){return{...this.cellWidth?{width:`${this.cellWidth}%`}:{}}},timelineVisible(){const{time:e,timeTo:t}=this.options;return this.data.today&&this.isWeekOrDayView&&e&&!this.allDay&&this.nowInMinutes<=t},todaysTimePosition(){if(!this.data.today||!this.options.time)return;const e=this.nowInMinutes-this.options.timeFrom;return Math.round(e*this.timeScale)},timeScale(){return this.options.timeCellHeight/this.options.timeStep}}},[["render",function(e,t,r,d,h,p){const D=w("event");return i(),y(b,{class:l(["vuecal__cell",p.cellClasses]),name:`slide-fade--${p.transitionDirection}`,tag:"div",appear:r.options.transitions,style:o(p.cellStyles)},{default:u((()=>[(i(!0),s(n,null,a(p.splitsCount?p.splits:1,((d,h)=>(i(),s("div",{class:l(["vuecal__flex vuecal__cell-content",p.splitsCount&&p.splitClasses(d)]),key:r.options.transitions?`${p.view.id}-${r.data.content}-${h}`:h,"data-split":!!p.splitsCount&&d.id,column:"",tabindex:"0","aria-label":r.data.content,onFocus:t[0]||(t[0]=e=>p.onCellFocus(e)),onKeypress:t[1]||(t[1]=f((e=>p.onCellkeyPressEnter(e)),["enter"])),onTouchstart:e=>!p.isDisabled&&p.onCellTouchStart(e,p.splitsCount?d.id:null),onMousedown:e=>!p.isDisabled&&p.onCellMouseDown(e,p.splitsCount?d.id:null),onClick:t[2]||(t[2]=e=>!p.isDisabled&&p.onCellClick(e)),onDblclick:t[3]||(t[3]=e=>!p.isDisabled&&p.onCellDblClick(e)),onContextmenu:t[4]||(t[4]=e=>!p.isDisabled&&r.options.cellContextmenu&&p.onCellContextMenu(e)),onDragenter:t[5]||(t[5]=t=>!p.isDisabled&&r.editEvents.drag&&p.dnd&&p.dnd.cellDragEnter(t,e.$data,r.data.startDate)),onDragover:t=>!p.isDisabled&&r.editEvents.drag&&p.dnd&&p.dnd.cellDragOver(t,e.$data,r.data.startDate,p.splitsCount?d.id:null),onDragleave:t[6]||(t[6]=t=>!p.isDisabled&&r.editEvents.drag&&p.dnd&&p.dnd.cellDragLeave(t,e.$data,r.data.startDate)),onDrop:t=>!p.isDisabled&&r.editEvents.drag&&p.dnd&&p.dnd.cellDragDrop(t,e.$data,r.data.startDate,p.splitsCount?d.id:null)},[r.options.showTimeInCells&&r.options.time&&p.isWeekOrDayView&&!r.allDay?(i(),s("div",ae,[(i(!0),s(n,null,a(p.vuecal.timeCells,((e,t)=>(i(),s("span",{class:"cell-time-label",key:t},v(e.label),1)))),128))])):m("",!0),p.isWeekOrDayView&&!r.allDay&&p.specialHours.length?(i(!0),s(n,{key:1},a(p.specialHours,((e,t)=>(i(),s("div",{class:l(["vuecal__special-hours",`vuecal__special-hours--day${e.day} ${e.class}`]),style:o(`height: ${e.height}px;top: ${e.top}px`)},[e.label?(i(),s("div",{key:0,class:"special-hours-label",innerHTML:e.label},null,8,le)):m("",!0)],6)))),256)):m("",!0),c(e.$slots,"cell-content",{events:p.events,selectCell:e=>p.selectCell(e,!0),split:!!p.splitsCount&&d}),p.eventsCount&&(p.isWeekOrDayView||"month"===p.view.id&&r.options.eventsOnMonthView)?(i(),s("div",oe,[(i(!0),s(n,null,a(p.splitsCount?d.events:p.events,((t,s)=>(i(),y(D,{key:s,"cell-formatted-date":r.data.formattedDate,event:t,"all-day":r.allDay,"cell-events":p.splitsCount?d.events:p.events,overlaps:((p.splitsCount?d.overlaps[t._eid]:e.cellOverlaps[t._eid])||[]).overlaps,"event-position":((p.splitsCount?d.overlaps[t._eid]:e.cellOverlaps[t._eid])||[]).position,"overlaps-streak":p.splitsCount?d.overlapsStreak:e.cellOverlapsStreak},{event:u((({event:t,view:i})=>[c(e.$slots,"event",{view:i,event:t})])),_:2},1032,["cell-formatted-date","event","all-day","cell-events","overlaps","event-position","overlaps-streak"])))),128))])):m("",!0)],42,ne)))),128)),p.timelineVisible?(i(),s("div",{class:"vuecal__now-line",style:o(`top: ${p.todaysTimePosition}px`),key:r.options.transitions?`${p.view.id}-now-line`:"now-line",title:p.utils.date.formatTime(p.vuecal.now)},null,12,re)):m("",!0)])),_:3},8,["class","name","appear","style"])}]]),ue={key:0,class:"vuecal__all-day-text",style:{width:"3em"}};const he=U({inject:["vuecal","view","editEvents"],components:{"vuecal-cell":de},props:{options:{type:Object,required:!0},cells:{type:Array,required:!0},label:{type:String,required:!0},daySplits:{type:Array,default:()=>[]},shortEvents:{type:Boolean,default:!0},height:{type:String,default:""},cellOrSplitMinWidth:{type:Number,default:null}},computed:{hasCellOrSplitWidth(){return!!(this.options.minCellWidth||this.daySplits.length&&this.options.minSplitWidth)}}},[["render",function(e,t,r,d,p,D){const g=w("vuecal-cell");return i(),s("div",{class:"vuecal__flex vuecal__all-day",style:o(r.cellOrSplitMinWidth&&{height:r.height})},[r.cellOrSplitMinWidth?m("",!0):(i(),s("div",ue,[h("span",null,v(r.label),1)])),h("div",{class:l(["vuecal__flex vuecal__cells",`${D.view.id}-view`]),grow:"",style:o(r.cellOrSplitMinWidth?`min-width: ${r.cellOrSplitMinWidth}px`:"")},[(i(!0),s(n,null,a(r.cells,((t,s)=>(i(),y(g,{key:s,options:r.options,"edit-events":D.editEvents,data:t,"all-day":!0,"cell-width":r.options.hideWeekdays.length&&(D.vuecal.isWeekView||D.vuecal.isMonthView)&&D.vuecal.cellWidth,"min-timestamp":r.options.minTimestamp,"max-timestamp":r.options.maxTimestamp,"cell-splits":r.daySplits},{event:u((({event:t,view:i})=>[c(e.$slots,"event",{view:i,event:t})])),_:2},1032,["options","edit-events","data","cell-width","min-timestamp","max-timestamp","cell-splits"])))),128))],6)],4)}]]),ce=["lang"],ve=h("i",{class:"angle"},null,-1),me=h("i",{class:"angle"},null,-1),pe={class:"default"},we={key:0,class:"vuecal__flex vuecal__body",grow:""},ye=["onBlur","innerHTML"],De=["innerHTML"],ge=["innerHTML"],fe={class:"vuecal__flex",row:"",grow:""},_e={key:0,class:"vuecal__time-column"},be=h("span",{class:"vuecal__time-cell-line"},null,-1),ke={class:"vuecal__time-cell-label"},Me={key:1,class:"vuecal__flex vuecal__week-numbers",column:""},Te=["wrap","column"],Ee=["onBlur","innerHTML"],Ce=["innerHTML"],Se=["innerHTML"],Oe=["wrap"],$e=["innerHTML"],xe=["innerHTML"],We={key:2,class:"vuecal__cell-events-count"},je={key:3,class:"vuecal__no-event"},He=["onBlur","innerHTML"],Ve=["innerHTML"],Ae={key:2,class:"vuecal__event-time"},Ye={key:0},Le={key:1,class:"days-to-end"},Fe=["innerHTML"],Be={key:0,class:"vuecal__scrollbar-check"},Ne=[h("div",null,null,-1)];const ze=1440,Ie={weekDays:Array(7).fill(""),weekDaysShort:[],months:Array(12).fill(""),years:"",year:"",month:"",week:"",day:"",today:"",noEvent:"",allDay:"",deleteEvent:"",createEvent:"",dateFormat:"dddd MMMM D, YYYY",am:"am",pm:"pm"},Pe=["years","year","month","week","day"],Ue=new class{constructor(e,i=!1){t(this,"texts",{}),t(this,"dateToMinutes",(e=>60*e.getHours()+e.getMinutes())),S=this,this._texts=e,!i&&Date&&!Date.prototype.addDays&&this._initDatePrototypes()}_initDatePrototypes(){Date.prototype.addDays=function(e){return S.addDays(this,e)},Date.prototype.subtractDays=function(e){return S.subtractDays(this,e)},Date.prototype.addHours=function(e){return S.addHours(this,e)},Date.prototype.subtractHours=function(e){return S.subtractHours(this,e)},Date.prototype.addMinutes=function(e){return S.addMinutes(this,e)},Date.prototype.subtractMinutes=function(e){return S.subtractMinutes(this,e)},Date.prototype.getWeek=function(){return S.getWeek(this)},Date.prototype.isToday=function(){return S.isToday(this)},Date.prototype.isLeapYear=function(){return S.isLeapYear(this)},Date.prototype.format=function(e="YYYY-MM-DD"){return S.formatDate(this,e)},Date.prototype.formatTime=function(e="HH:mm"){return S.formatTime(this,e)}}removePrototypes(){delete Date.prototype.addDays,delete Date.prototype.subtractDays,delete Date.prototype.addHours,delete Date.prototype.subtractHours,delete Date.prototype.addMinutes,delete Date.prototype.subtractMinutes,delete Date.prototype.getWeek,delete Date.prototype.isToday,delete Date.prototype.isLeapYear,delete Date.prototype.format,delete Date.prototype.formatTime}updateTexts(e){this._texts=e}_todayFormatted(){return E!==(new Date).getDate()&&(T=new Date,E=T.getDate(),C=`${T.getFullYear()}-${T.getMonth()}-${T.getDate()}`),C}addDays(e,t){const i=new Date(e.valueOf());return i.setDate(i.getDate()+t),i}subtractDays(e,t){const i=new Date(e.valueOf());return i.setDate(i.getDate()-t),i}addHours(e,t){const i=new Date(e.valueOf());return i.setHours(i.getHours()+t),i}subtractHours(e,t){const i=new Date(e.valueOf());return i.setHours(i.getHours()-t),i}addMinutes(e,t){const i=new Date(e.valueOf());return i.setMinutes(i.getMinutes()+t),i}subtractMinutes(e,t){const i=new Date(e.valueOf());return i.setMinutes(i.getMinutes()-t),i}getWeek(e){const t=new Date(Date.UTC(e.getFullYear(),e.getMonth(),e.getDate())),i=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-i);const s=new Date(Date.UTC(t.getUTCFullYear(),0,1));return Math.ceil(((t-s)/864e5+1)/7)}isToday(e){return`${e.getFullYear()}-${e.getMonth()}-${e.getDate()}`===this._todayFormatted()}isLeapYear(e){const t=e.getFullYear();return!(t%400)||t%100&&!(t%4)}getPreviousFirstDayOfWeek(e=null,t){const i=e&&new Date(e.valueOf())||new Date,s=t?7:6;return i.setDate(i.getDate()-(i.getDay()+s)%7),i}stringToDate(e){return e instanceof Date?e:(10===e.length&&(e+=" 00:00"),new Date(e.replace(/-/g,"/")))}countDays(e,t){"string"==typeof e&&(e=e.replace(/-/g,"/")),"string"==typeof t&&(t=t.replace(/-/g,"/")),e=new Date(e).setHours(0,0,0,0),t=new Date(t).setHours(0,0,1,0);const i=60*(new Date(t).getTimezoneOffset()-new Date(e).getTimezoneOffset())*1e3;return Math.ceil((t-e-i)/864e5)}datesInSameTimeStep(e,t,i){return Math.abs(e.getTime()-t.getTime())<=60*i*1e3}formatDate(e,t="YYYY-MM-DD",i=null){if(i||(i=this._texts),t||(t="YYYY-MM-DD"),"YYYY-MM-DD"===t)return this.formatDateLite(e);O={},$={};const s={YYYY:()=>this._hydrateDateObject(e,i).YYYY,YY:()=>this._hydrateDateObject(e,i).YY(),M:()=>this._hydrateDateObject(e,i).M,MM:()=>this._hydrateDateObject(e,i).MM(),MMM:()=>this._hydrateDateObject(e,i).MMM(),MMMM:()=>this._hydrateDateObject(e,i).MMMM(),MMMMG:()=>this._hydrateDateObject(e,i).MMMMG(),D:()=>this._hydrateDateObject(e,i).D,DD:()=>this._hydrateDateObject(e,i).DD(),S:()=>this._hydrateDateObject(e,i).S(),d:()=>this._hydrateDateObject(e,i).d,dd:()=>this._hydrateDateObject(e,i).dd(),ddd:()=>this._hydrateDateObject(e,i).ddd(),dddd:()=>this._hydrateDateObject(e,i).dddd(),HH:()=>this._hydrateTimeObject(e,i).HH,H:()=>this._hydrateTimeObject(e,i).H,hh:()=>this._hydrateTimeObject(e,i).hh,h:()=>this._hydrateTimeObject(e,i).h,am:()=>this._hydrateTimeObject(e,i).am,AM:()=>this._hydrateTimeObject(e,i).AM,mm:()=>this._hydrateTimeObject(e,i).mm,m:()=>this._hydrateTimeObject(e,i).m};return t.replace(/(\{[a-zA-Z]+\}|[a-zA-Z]+)/g,((e,t)=>{const i=s[t.replace(/\{|\}/g,"")];return void 0!==i?i():t}))}formatDateLite(e){const t=e.getMonth()+1,i=e.getDate();return`${e.getFullYear()}-${t<10?"0":""}${t}-${i<10?"0":""}${i}`}formatTime(e,t="HH:mm",i=null,s=!1){let n=!1;if(s){const[t,i,s]=[e.getHours(),e.getMinutes(),e.getSeconds()];t+i+s===141&&(n=!0)}if(e instanceof Date&&"HH:mm"===t)return n?"24:00":this.formatTimeLite(e);$={},i||(i=this._texts);const a=this._hydrateTimeObject(e,i),l=t.replace(/(\{[a-zA-Z]+\}|[a-zA-Z]+)/g,((e,t)=>{const i=a[t.replace(/\{|\}/g,"")];return void 0!==i?i:t}));return n?l.replace("23:59","24:00"):l}formatTimeLite(e){const t=e.getHours(),i=e.getMinutes();return`${(t<10?"0":"")+t}:${(i<10?"0":"")+i}`}_nth(e){if(e>3&&e<21)return"th";switch(e%10){case 1:return"st";case 2:return"nd";case 3:return"rd";default:return"th"}}_hydrateDateObject(e,t){if(O.D)return O;const i=e.getFullYear(),s=e.getMonth()+1,n=e.getDate(),a=(e.getDay()-1+7)%7;return O={YYYY:i,YY:()=>i.toString().substring(2),M:s,MM:()=>(s<10?"0":"")+s,MMM:()=>t.months[s-1].substring(0,3),MMMM:()=>t.months[s-1],MMMMG:()=>(t.monthsGenitive||t.months)[s-1],D:n,DD:()=>(n<10?"0":"")+n,S:()=>this._nth(n),d:a+1,dd:()=>t.weekDays[a][0],ddd:()=>t.weekDays[a].substr(0,3),dddd:()=>t.weekDays[a]},O}_hydrateTimeObject(e,t){if($.am)return $;let i,s;e instanceof Date?(i=e.getHours(),s=e.getMinutes()):(i=Math.floor(e/60),s=Math.floor(e%60));const n=i%12?i%12:12,a=(t||{am:"am",pm:"pm"})[24===i||i<12?"am":"pm"];return $={H:i,h:n,HH:(i<10?"0":"")+i,hh:(n<10?"0":"")+n,am:a,AM:a.toUpperCase(),m:s,mm:(s<10?"0":"")+s},$}}(Ie),Re=U({name:"vue-cal",components:{"vuecal-cell":de,"vuecal-header":te,WeekdaysHeadings:R,AllDayBar:he},provide(){return{vuecal:this,utils:this.utils,modules:this.modules,previous:this.previous,next:this.next,switchView:this.switchView,updateSelectedDate:this.updateSelectedDate,editEvents:this.editEvents,view:this.view,domEvents:this.domEvents}},props:{activeView:{type:String,default:"week"},allDayBarHeight:{type:[String,Number],default:"25px"},cellClickHold:{type:Boolean,default:!0},cellContextmenu:{type:Boolean,default:!1},clickToNavigate:{type:Boolean,default:!1},dblclickToNavigate:{type:Boolean,default:!0},disableDatePrototypes:{type:Boolean,default:!1},disableDays:{type:Array,default:()=>[]},disableViews:{type:Array,default:()=>[]},dragToCreateEvent:{type:Boolean,default:!0},dragToCreateThreshold:{type:Number,default:15},editableEvents:{type:[Boolean,Object],default:!1},events:{type:Array,default:()=>[]},eventsCountOnYearView:{type:Boolean,default:!1},eventsOnMonthView:{type:[Boolean,String],default:!1},hideBody:{type:Boolean,default:!1},hideTitleBar:{type:Boolean,default:!1},hideViewSelector:{type:Boolean,default:!1},hideWeekdays:{type:Array,default:()=>[]},hideWeekends:{type:Boolean,default:!1},locale:{type:[String,Object],default:"en"},maxDate:{type:[String,Date],default:""},minCellWidth:{type:Number,default:0},minDate:{type:[String,Date],default:""},minEventWidth:{type:Number,default:0},minSplitWidth:{type:Number,default:0},onEventClick:{type:[Function,null],default:null},onEventCreate:{type:[Function,null],default:null},onEventDblclick:{type:[Function,null],default:null},overlapsPerTimeStep:{type:Boolean,default:!1},resizeX:{type:Boolean,default:!1},selectedDate:{type:[String,Date],default:""},showAllDayEvents:{type:[Boolean,String],default:!1},showTimeInCells:{type:Boolean,default:!1},showWeekNumbers:{type:[Boolean,String],default:!1},snapToTime:{type:Number,default:0},small:{type:Boolean,default:!1},specialHours:{type:Object,default:()=>({})},splitDays:{type:Array,default:()=>[]},startWeekOnSunday:{type:Boolean,default:!1},stickySplitLabels:{type:Boolean,default:!1},time:{type:Boolean,default:!0},timeCellHeight:{type:Number,default:40},timeFormat:{type:String,default:""},timeFrom:{type:Number,default:0},timeStep:{type:Number,default:60},timeTo:{type:Number,default:ze},todayButton:{type:Boolean,default:!1},transitions:{type:Boolean,default:!0},twelveHour:{type:Boolean,default:!1},watchRealTime:{type:Boolean,default:!1},xsmall:{type:Boolean,default:!1}},data(){return{ready:!1,texts:{...Ie},utils:{date:!!this.disableDatePrototypes&&Ue.removePrototypes()||Ue,cell:null,event:null},modules:{dnd:null},cellsEl:null,view:{id:"",title:"",startDate:null,endDate:null,firstCellDate:null,lastCellDate:null,selectedDate:null,events:[]},eventIdIncrement:1,now:new Date,timeTickerIds:[null,null],domEvents:{resizeAnEvent:{_eid:null,start:null,split:null,segment:null,originalEndTimeMinutes:0,originalEnd:null,end:null,startCell:null,endCell:null},dragAnEvent:{_eid:null},dragCreateAnEvent:{startCursorY:null,start:null,split:null,event:null},focusAnEvent:{_eid:null,mousedUp:!1},clickHoldAnEvent:{_eid:null,timeout:1200,timeoutId:null},dblTapACell:{taps:0,timeout:500},clickHoldACell:{cellId:null,split:null,timeout:1200,timeoutId:null,eventCreated:!1},cancelClickEventCreation:!1},mutableEvents:[],transitionDirection:"right"}},methods:{async loadLocale(e){if("object"==typeof this.locale)return this.texts=Object.assign({},Ie,e),void this.utils.date.updateTexts(this.texts);if("en"===this.locale){const e=await import("./i18n/en.es.js");this.texts=Object.assign({},Ie,e)}else((e,t)=>{const i=e[t];return i?"function"==typeof i?i():Promise.resolve(i):new Promise(((e,i)=>{("function"==typeof queueMicrotask?queueMicrotask:setTimeout)(i.bind(null,new Error("Unknown variable dynamic import: "+t)))}))})(Object.assign({"./i18n/ar.json":()=>import("./i18n/ar.es.js"),"./i18n/bg.json":()=>import("./i18n/bg.es.js"),"./i18n/bn.json":()=>import("./i18n/bn.es.js"),"./i18n/bs.json":()=>import("./i18n/bs.es.js"),"./i18n/ca.json":()=>import("./i18n/ca.es.js"),"./i18n/cs.json":()=>import("./i18n/cs.es.js"),"./i18n/da.json":()=>import("./i18n/da.es.js"),"./i18n/de.json":()=>import("./i18n/de.es.js"),"./i18n/el.json":()=>import("./i18n/el.es.js"),"./i18n/en.json":()=>import("./i18n/en.es.js"),"./i18n/es.json":()=>import("./i18n/es.es.js"),"./i18n/et.json":()=>import("./i18n/et.es.js"),"./i18n/fa.json":()=>import("./i18n/fa.es.js"),"./i18n/fr.json":()=>import("./i18n/fr.es.js"),"./i18n/he.json":()=>import("./i18n/he.es.js"),"./i18n/hr.json":()=>import("./i18n/hr.es.js"),"./i18n/hu.json":()=>import("./i18n/hu.es.js"),"./i18n/id.json":()=>import("./i18n/id.es.js"),"./i18n/is.json":()=>import("./i18n/is.es.js"),"./i18n/it.json":()=>import("./i18n/it.es.js"),"./i18n/ja.json":()=>import("./i18n/ja.es.js"),"./i18n/ka.json":()=>import("./i18n/ka.es.js"),"./i18n/ko.json":()=>import("./i18n/ko.es.js"),"./i18n/lt.json":()=>import("./i18n/lt.es.js"),"./i18n/mn.json":()=>import("./i18n/mn.es.js"),"./i18n/nl.json":()=>import("./i18n/nl.es.js"),"./i18n/no.json":()=>import("./i18n/no.es.js"),"./i18n/pl.json":()=>import("./i18n/pl.es.js"),"./i18n/pt-br.json":()=>import("./i18n/pt-br.es.js"),"./i18n/ro.json":()=>import("./i18n/ro.es.js"),"./i18n/ru.json":()=>import("./i18n/ru.es.js"),"./i18n/sk.json":()=>import("./i18n/sk.es.js"),"./i18n/sl.json":()=>import("./i18n/sl.es.js"),"./i18n/sq.json":()=>import("./i18n/sq.es.js"),"./i18n/sr.json":()=>import("./i18n/sr.es.js"),"./i18n/sv.json":()=>import("./i18n/sv.es.js"),"./i18n/tr.json":()=>import("./i18n/tr.es.js"),"./i18n/uk.json":()=>import("./i18n/uk.es.js"),"./i18n/vi.json":()=>import("./i18n/vi.es.js"),"./i18n/zh-cn.json":()=>import("./i18n/zh-cn.es.js"),"./i18n/zh-hk.json":()=>import("./i18n/zh-hk.es.js")}),`./i18n/${e}.json`).then((e=>{this.texts=Object.assign({},Ie,e.default),this.utils.date.updateTexts(this.texts)}))},loadDragAndDrop(){import("./drag-and-drop.es.js").then((e=>{const{DragAndDrop:t}=e;this.modules.dnd=new t(this)})).catch((()=>console.warn("Vue Cal: Missing drag & drop module.")))},validateView(e){return Pe.includes(e)||(console.error(`Vue Cal: invalid active-view parameter provided: "${e}".\nA valid view must be one of: ${Pe.join(", ")}.`),e="week"),this.enabledViews.includes(e)||(console.warn(`Vue Cal: the provided active-view "${e}" is disabled. Using the "${this.enabledViews[0]}" view instead.`),e=this.enabledViews[0]),e},switchToNarrowerView(e=null){this.transitionDirection="right";const t=this.enabledViews[this.enabledViews.indexOf(this.view.id)+1];t&&this.switchView(t,e)},switchView(e,t=null,i=!1){e=this.validateView(e);const s=this.utils.date,n=this.view.startDate&&this.view.startDate.getTime();if(this.transitions&&i){if(this.view.id===e)return;const t=this.enabledViews;this.transitionDirection=t.indexOf(this.view.id)>t.indexOf(e)?"left":"right"}const a=this.view.id;switch(this.view.events=[],this.view.id=e,this.view.firstCellDate=null,this.view.lastCellDate=null,t||(t=this.view.selectedDate||this.view.startDate),e){case"years":this.view.startDate=new Date(25*Math.floor(t.getFullYear()/25)||2e3,0,1),this.view.endDate=new Date(this.view.startDate.getFullYear()+25,0,1),this.view.endDate.setSeconds(-1);break;case"year":this.view.startDate=new Date(t.getFullYear(),0,1),this.view.endDate=new Date(t.getFullYear()+1,0,1),this.view.endDate.setSeconds(-1);break;case"month":{this.view.startDate=new Date(t.getFullYear(),t.getMonth(),1),this.view.endDate=new Date(t.getFullYear(),t.getMonth()+1,1),this.view.endDate.setSeconds(-1);let e=new Date(this.view.startDate);if(e.getDay()!==(this.startWeekOnSunday?0:1)&&(e=s.getPreviousFirstDayOfWeek(e,this.startWeekOnSunday)),this.view.firstCellDate=e,this.view.lastCellDate=s.addDays(e,41),this.view.lastCellDate.setHours(23,59,59,0),this.hideWeekends){if([0,6].includes(this.view.firstCellDate.getDay())){const e=6!==this.view.firstCellDate.getDay()||this.startWeekOnSunday?1:2;this.view.firstCellDate=s.addDays(this.view.firstCellDate,e)}if([0,6].includes(this.view.startDate.getDay())){const e=6===this.view.startDate.getDay()?2:1;this.view.startDate=s.addDays(this.view.startDate,e)}if([0,6].includes(this.view.lastCellDate.getDay())){const e=0!==this.view.lastCellDate.getDay()||this.startWeekOnSunday?1:2;this.view.lastCellDate=s.subtractDays(this.view.lastCellDate,e)}if([0,6].includes(this.view.endDate.getDay())){const e=0===this.view.endDate.getDay()?2:1;this.view.endDate=s.subtractDays(this.view.endDate,e)}}break}case"week":{t=s.getPreviousFirstDayOfWeek(t,this.startWeekOnSunday);const e=this.hideWeekends?5:7;this.view.startDate=this.hideWeekends&&this.startWeekOnSunday?s.addDays(t,1):t,this.view.startDate.setHours(0,0,0,0),this.view.endDate=s.addDays(t,e),this.view.endDate.setSeconds(-1);break}case"day":this.view.startDate=t,this.view.startDate.setHours(0,0,0,0),this.view.endDate=new Date(t),this.view.endDate.setHours(23,59,59,0)}this.addEventsToView();const l=this.view.startDate&&this.view.startDate.getTime();if((a!==e||l!==n)&&(this.$emit("update:activeView",e),this.ready)){const t=this.view.startDate,i={view:e,startDate:t,endDate:this.view.endDate,...this.isMonthView?{firstCellDate:this.view.firstCellDate,lastCellDate:this.view.lastCellDate,outOfScopeEvents:this.view.outOfScopeEvents.map(this.cleanupEvent)}:{},events:this.view.events.map(this.cleanupEvent),...this.isWeekView?{week:s.getWeek(this.startWeekOnSunday?s.addDays(t,1):t)}:{}};this.$emit("view-change",i)}},previous(){this.previousNext(!1)},next(){this.previousNext()},previousNext(e=!0){const t=this.utils.date;this.transitionDirection=e?"right":"left";const i=e?1:-1;let s=null;const{startDate:n,id:a}=this.view;switch(a){case"years":s=new Date(n.getFullYear()+25*i,0,1);break;case"year":s=new Date(n.getFullYear()+1*i,1,1);break;case"month":s=new Date(n.getFullYear(),n.getMonth()+1*i,1);break;case"week":s=t[e?"addDays":"subtractDays"](t.getPreviousFirstDayOfWeek(n,this.startWeekOnSunday),7);break;case"day":s=t[e?"addDays":"subtractDays"](n,1);const a=s.getDay(),l=this.startWeekOnSunday?a:(a||7)-1;if(this.weekDays[l].hide){const i=this.weekDays.map(((e,t)=>({...e,i:t})));let n=0;e?([...i.slice(l),...i].find((e=>(n++,!e.hide))).i,n--):[...i,...i.slice(0,l)].reverse().find((e=>(n++,!e.hide))).i,s=t[e?"addDays":"subtractDays"](s,n)}}s&&this.switchView(a,s)},addEventsToView(e=[]){const t=this.utils.event,{startDate:i,endDate:s,firstCellDate:n,lastCellDate:a}=this.view;if(e.length||(this.view.events=[]),!(e=e.length?e:[...this.mutableEvents])||this.isYearsOrYearView&&!this.eventsCountOnYearView)return;let l=e.filter((e=>t.eventInRange(e,i,s)));!this.isYearsOrYearView&&!(this.isMonthView&&!this.eventsOnMonthView)&&(l=l.map((e=>e.daysCount>1?t.createEventSegments(e,n||i,a||s):e))),this.view.events.push(...l),this.isMonthView&&(this.view.outOfScopeEvents=[],e.forEach((e=>{(t.eventInRange(e,n,i)||t.eventInRange(e,s,a))&&(this.view.events.some((t=>t._eid===e._eid))||this.view.outOfScopeEvents.push(e))})))},findAncestor(e,t){for(;(e=e.parentElement)&&!e.classList.contains(t););return e},isDOMElementAnEvent(e){return e.classList.contains("vuecal__event")||this.findAncestor(e,"vuecal__event")},onMouseMove(e){const{resizeAnEvent:t,dragAnEvent:i,dragCreateAnEvent:s}=this.domEvents;null===t._eid&&null===i._eid&&!s.start||(e.preventDefault(),t._eid?this.eventResizing(e):this.dragToCreateEvent&&s.start&&this.eventDragCreation(e))},onMouseUp(e){const{focusAnEvent:t,resizeAnEvent:i,clickHoldAnEvent:s,clickHoldACell:n,dragCreateAnEvent:a}=this.domEvents,{_eid:l}=s,{_eid:o}=i;let r=!1;const{event:d,start:u}=a,h=this.isDOMElementAnEvent(e.target),c=t.mousedUp;if(t.mousedUp=!1,h&&(this.domEvents.cancelClickEventCreation=!0),n.eventCreated)return;if(o){const{originalEnd:e,originalEndTimeMinutes:t,endTimeMinutes:s}=i,n=this.view.events.find((e=>e._eid===i._eid));if(r=s&&s!==t,n&&n.end.getTime()!==e.getTime()){const t=this.mutableEvents.find((e=>e._eid===i._eid));t.endTimeMinutes=n.endTimeMinutes,t.end=n.end;const s=this.cleanupEvent(n),a={...this.cleanupEvent(n),end:e,endTimeMinutes:n.originalEndTimeMinutes};this.$emit("event-duration-change",{event:s,oldDate:i.originalEnd,originalEvent:a}),this.$emit("event-change",{event:s,originalEvent:a})}n&&(n.resizing=!1),i._eid=null,i.start=null,i.split=null,i.segment=null,i.originalEndTimeMinutes=null,i.originalEnd=null,i.endTimeMinutes=null,i.startCell=null,i.endCell=null}else u&&(d&&(this.emitWithEvent("event-drag-create",d),a.event.resizing=!1),a.start=null,a.split=null,a.event=null);!h&&!o&&this.unfocusEvent(),s.timeoutId&&!l&&(clearTimeout(s.timeoutId),s.timeoutId=null),n.timeoutId&&(clearTimeout(n.timeoutId),n.timeoutId=null);const v="function"==typeof this.onEventClick;if(c&&!r&&!l&&!d&&v){let i=this.view.events.find((e=>e._eid===t._eid));return!i&&this.isMonthView&&(i=this.view.outOfScopeEvents.find((e=>e._eid===t._eid))),i&&this.onEventClick(i,e)}},onKeyUp(e){27===e.keyCode&&this.cancelDelete()},eventResizing(e){const{resizeAnEvent:t}=this.domEvents,i=this.view.events.find((e=>e._eid===t._eid))||{segments:{}},{minutes:s,cursorCoords:n}=this.minutesAtCursor(e),a=i.segments&&i.segments[t.segment],{date:l,event:o}=this.utils,r=Math.max(s,this.timeFrom+1,(a||i).startTimeMinutes+1);if(i.endTimeMinutes=t.endTimeMinutes=r,this.snapToTime){const e=i.endTimeMinutes+this.snapToTime/2;i.endTimeMinutes=e-e%this.snapToTime}if(a&&(a.endTimeMinutes=i.endTimeMinutes),i.end.setHours(0,i.endTimeMinutes,i.endTimeMinutes===ze?-1:0,0),this.resizeX&&this.isWeekView){i.daysCount=l.countDays(i.start,i.end);const e=this.cellsEl,s=e.offsetWidth/e.childElementCount,a=Math.floor(n.x/s);if(null===t.startCell&&(t.startCell=a-(i.daysCount-1)),t.endCell!==a){t.endCell=a;const e=l.addDays(i.start,a-t.startCell),s=Math.max(l.countDays(i.start,e),1);if(s!==i.daysCount){let e=null;e=s>i.daysCount?o.addEventSegment(i):o.removeEventSegment(i),t.segment=e,i.endTimeMinutes+=.001}}}this.$emit("event-resizing",{_eid:i._eid,end:i.end,endTimeMinutes:i.endTimeMinutes})},eventDragCreation(e){const{dragCreateAnEvent:t}=this.domEvents,{start:i,startCursorY:s,split:n}=t,a=new Date(i),{minutes:l,cursorCoords:{y:o}}=this.minutesAtCursor(e);if(t.event||!(Math.abs(s-o)<this.dragToCreateThreshold))if(t.event){if(a.setHours(0,l,l===ze?-1:0,0),this.snapToTime){let e=60*a.getHours()+a.getMinutes();const t=e+this.snapToTime/2;e=t-t%this.snapToTime,a.setHours(0,e,0,0)}const e=i<a,{event:s}=t;s.start=e?i:a,s.end=e?a:i,s.startTimeMinutes=60*s.start.getHours()+s.start.getMinutes(),s.endTimeMinutes=60*s.end.getHours()+s.end.getMinutes()}else{if(t.event=this.utils.event.createAnEvent(i,1,{split:n}),!t.event)return t.start=null,t.split=null,void(t.event=null);t.event.resizing=!0}},unfocusEvent(){const{focusAnEvent:e,clickHoldAnEvent:t}=this.domEvents,i=this.view.events.find((i=>i._eid===(e._eid||t._eid)));e._eid=null,t._eid=null,i&&(i.focused=!1,i.deleting=!1)},cancelDelete(){const{clickHoldAnEvent:e}=this.domEvents;if(e._eid){const t=this.view.events.find((t=>t._eid===e._eid));t&&(t.deleting=!1),e._eid=null,e.timeoutId=null}},onEventTitleBlur(e,t){if(t.title===e.target.innerHTML)return;const i=t.title;t.title=e.target.innerHTML;const s=this.cleanupEvent(t);this.$emit("event-title-change",{event:s,oldTitle:i}),this.$emit("event-change",{event:s,originalEvent:{...s,title:i}})},updateMutableEvents(){const e=this.utils.date;this.mutableEvents=[],this.events.forEach((t=>{const i="string"==typeof t.start?e.stringToDate(t.start):t.start,s=e.formatDateLite(i),n=e.dateToMinutes(i);let a=null;"string"==typeof t.end&&t.end.includes("24:00")?(a=new Date(t.end.replace(" 24:00","")),a.setHours(23,59,59,0)):a="string"==typeof t.end?e.stringToDate(t.end):t.end;let l=e.formatDateLite(a),o=e.dateToMinutes(a);(!o||o===ze)&&(!this.time||"string"==typeof t.end&&10===t.end.length?a.setHours(23,59,59,0):a.setSeconds(a.getSeconds()-1),l=e.formatDateLite(a),o=ze);const r=s!==l;t=Object.assign({...this.utils.event.eventDefaults},t,{_eid:`${this._.uid}_${this.eventIdIncrement++}`,segments:r?{}:null,start:i,startTimeMinutes:n,end:a,endTimeMinutes:o,daysCount:r?e.countDays(i,a):1,class:t.class}),this.mutableEvents.push(t)}))},minutesAtCursor(e){return this.utils.cell.minutesAtCursor(e)},createEvent(e,t,i={}){return this.utils.event.createAnEvent(e,t,i)},cleanupEvent:e=>(e={...e},["segments","deletable","deleting","titleEditable","resizable","resizing","draggable","dragging","draggingStatic","focused"].forEach((t=>{t in e&&delete e[t]})),e.repeat||delete e.repeat,e),emitWithEvent(e,t){this.$emit(e,this.cleanupEvent(t))},updateSelectedDate(e){if((e=e&&"string"==typeof e?this.utils.date.stringToDate(e):new Date(e))&&e instanceof Date){const{selectedDate:t}=this.view;t&&(this.transitionDirection=t.getTime()>e.getTime()?"left":"right"),e.setHours(0,0,0,0),(!t||t.getTime()!==e.getTime())&&(this.view.selectedDate=e),this.switchView(this.view.id)}this.$emit("update:selected-date",this.view.selectedDate)},getWeekNumber(e){const t=this.utils.date,i=this.firstCellDateWeekNumber+e,s=this.startWeekOnSunday?1:0;return i>52?t.getWeek(t.addDays(this.view.firstCellDate,7*e+s)):i},timeTick(){this.now=new Date,this.timeTickerIds[1]=setTimeout(this.timeTick,6e4)},updateDateTexts(){this.utils.date.updateTexts(this.texts)},alignWithScrollbar(){if(document.getElementById("vuecal-align-with-scrollbar"))return;const e=this.$refs.vuecal.getElementsByClassName("vuecal__scrollbar-check")[0],t=e.offsetWidth-e.children[0].offsetWidth;if(t){const e=document.createElement("style");e.id="vuecal-align-with-scrollbar",e.type="text/css",e.innerHTML=`.vuecal--view-with-time .vuecal__weekdays-headings,.vuecal--view-with-time .vuecal__all-day {padding-right: ${t}px}`,document.head.appendChild(e)}},cellOrSplitHasEvents:(e,t=null)=>e.length&&(!t&&e.length||t&&e.some((e=>e.split===t.id)))},created(){this.utils.cell=new x(this),this.utils.event=new A(this,this.utils.date),this.loadLocale(this.locale),this.editEvents.drag&&this.loadDragAndDrop(),this.updateMutableEvents(this.events),this.view.id=this.currentView,this.selectedDate?this.updateSelectedDate(this.selectedDate):(this.view.selectedDate=new Date,this.switchView(this.currentView)),this.time&&this.watchRealTime&&(this.timeTickerIds[0]=setTimeout(this.timeTick,1e3*(60-this.now.getSeconds())))},mounted(){const e=this.utils.date,t="ontouchstart"in window,{resize:i,drag:s,create:n,delete:a,title:l}=this.editEvents,o=this.onEventClick&&"function"==typeof this.onEventClick;(i||s||n||a||l||o)&&window.addEventListener(t?"touchend":"mouseup",this.onMouseUp),(i||s||n&&this.dragToCreateEvent)&&window.addEventListener(t?"touchmove":"mousemove",this.onMouseMove,{passive:!1}),l&&window.addEventListener("keyup",this.onKeyUp),t&&(this.$refs.vuecal.oncontextmenu=function(e){e.preventDefault(),e.stopPropagation()}),this.hideBody||this.alignWithScrollbar();const r=this.view.startDate,d={view:this.view.id,startDate:r,endDate:this.view.endDate,...this.isMonthView?{firstCellDate:this.view.firstCellDate,lastCellDate:this.view.lastCellDate}:{},events:this.view.events.map(this.cleanupEvent),...this.isWeekView?{week:e.getWeek(this.startWeekOnSunday?e.addDays(r,1):r)}:{}};this.$emit("ready",d),this.ready=!0},beforeUnmount(){const e="ontouchstart"in window;window.removeEventListener(e?"touchmove":"mousemove",this.onMouseMove,{passive:!1}),window.removeEventListener(e?"touchend":"mouseup",this.onMouseUp),window.removeEventListener("keyup",this.onKeyUp),this.timeTickerIds[0]&&clearTimeout(this.timeTickerIds[0]),this.timeTickerIds[1]&&clearTimeout(this.timeTickerIds[1]),this.timeTickerIds=[null,null]},computed:{editEvents(){return this.editableEvents&&"object"==typeof this.editableEvents?{title:!!this.editableEvents.title,drag:!!this.editableEvents.drag,resize:!!this.editableEvents.resize,create:!!this.editableEvents.create,delete:!!this.editableEvents.delete}:{title:!!this.editableEvents,drag:!!this.editableEvents,resize:!!this.editableEvents,create:!!this.editableEvents,delete:!!this.editableEvents}},views(){return{years:{label:this.texts.years,enabled:!this.disableViews.includes("years")},year:{label:this.texts.year,enabled:!this.disableViews.includes("year")},month:{label:this.texts.month,enabled:!this.disableViews.includes("month")},week:{label:this.texts.week,enabled:!this.disableViews.includes("week")},day:{label:this.texts.day,enabled:!this.disableViews.includes("day")}}},currentView(){return this.validateView(this.activeView)},enabledViews(){return Object.keys(this.views).filter((e=>this.views[e].enabled))},hasTimeColumn(){return this.time&&this.isWeekOrDayView},isShortMonthView(){return this.isMonthView&&"short"===this.eventsOnMonthView},firstCellDateWeekNumber(){const e=this.utils.date,t=this.view.firstCellDate;return e.getWeek(this.startWeekOnSunday?e.addDays(t,1):t)},timeCells(){const e=[];for(let t=this.timeFrom,i=this.timeTo;t<i;t+=this.timeStep)e.push({hours:Math.floor(t/60),minutes:t%60,label:this.utils.date.formatTime(t,this.TimeFormat),value:t});return e},TimeFormat(){return this.timeFormat||(this.twelveHour?"h:mm{am}":"HH:mm")},daySplits(){return(this.splitDays.filter((e=>!e.hide))||[]).map(((e,t)=>({...e,id:e.id||t+1})))},hasSplits(){return this.daySplits.length&&this.isWeekOrDayView},hasShortEvents(){return"short"===this.showAllDayEvents},cellOrSplitMinWidth(){let e=null;return this.hasSplits&&this.minSplitWidth?e=this.visibleDaysCount*this.minSplitWidth*this.daySplits.length:this.minCellWidth&&this.isWeekView&&(e=this.visibleDaysCount*this.minCellWidth),e},allDayBar(){let e=this.allDayBarHeight||null;return e&&!isNaN(e)&&(e+="px"),{cells:this.viewCells,options:this.$props,label:this.texts.allDay,shortEvents:this.hasShortEvents,daySplits:this.hasSplits&&this.daySplits||[],cellOrSplitMinWidth:this.cellOrSplitMinWidth,height:e}},minTimestamp(){let e=null;return this.minDate&&"string"==typeof this.minDate?e=this.utils.date.stringToDate(this.minDate):this.minDate&&this.minDate instanceof Date&&(e=this.minDate),e?e.getTime():null},maxTimestamp(){let e=null;return this.maxDate&&"string"==typeof this.maxDate?e=this.utils.date.stringToDate(this.maxDate):this.maxDate&&this.minDate instanceof Date&&(e=this.maxDate),e?e.getTime():null},weekDays(){let{weekDays:e,weekDaysShort:t=[]}=this.texts;return e=e.slice(0).map(((e,i)=>({label:e,...t.length?{short:t[i]}:{},hide:this.hideWeekends&&i>=5||this.hideWeekdays.length&&this.hideWeekdays.includes(i+1)}))),this.startWeekOnSunday&&e.unshift(e.pop()),e},weekDaysInHeader(){return this.isMonthView||this.isWeekView&&!this.minCellWidth&&!(this.hasSplits&&this.minSplitWidth)},months(){return this.texts.months.map((e=>({label:e})))},specialDayHours(){return this.specialHours&&Object.keys(this.specialHours).length?Array(7).fill("").map(((e,t)=>{let i=this.specialHours[t+1]||[];return Array.isArray(i)||(i=[i]),e=[],i.forEach((({from:i,to:s,class:n,label:a},l)=>{e[l]={day:t+1,from:[null,void 0].includes(i)?null:1*i,to:[null,void 0].includes(s)?null:1*s,class:n||"",label:a||""}})),e})):{}},viewTitle(){const e=this.utils.date;let t="";const i=this.view.startDate,s=i.getFullYear(),n=i.getMonth();switch(this.view.id){case"years":t=this.texts.years;break;case"year":t=s;break;case"month":t=`${this.months[n].label} ${s}`;break;case"week":{const s=this.view.endDate,n=i.getFullYear();let a=this.texts.months[i.getMonth()];this.xsmall&&(a=a.substring(0,3));let l=`${a} ${n}`;if(s.getMonth()!==i.getMonth()){const e=s.getFullYear();let t=this.texts.months[s.getMonth()];this.xsmall&&(t=t.substring(0,3)),l=n===e?`${a} - ${t} ${n}`:this.small?`${a.substring(0,3)} ${n} - ${t.substring(0,3)} ${e}`:`${a} ${n} - ${t} ${e}`}t=`${this.texts.week} ${e.getWeek(this.startWeekOnSunday?e.addDays(i,1):i)} (${l})`;break}case"day":t=this.utils.date.formatDate(i,this.texts.dateFormat,this.texts)}return t},viewCells(){const e=this.utils.date;let t=[],i=null,s=!1;this.watchRealTime||(this.now=new Date);const n=this.now;switch(this.view.id){case"years":i=this.view.startDate.getFullYear(),t=Array.apply(null,Array(25)).map(((t,s)=>{const a=new Date(i+s,0,1),l=new Date(i+s+1,0,1);return l.setSeconds(-1),{startDate:a,formattedDate:e.formatDateLite(a),endDate:l,content:i+s,current:i+s===n.getFullYear()}}));break;case"year":i=this.view.startDate.getFullYear(),t=Array.apply(null,Array(12)).map(((t,s)=>{const a=new Date(i,s,1),l=new Date(i,s+1,1);return l.setSeconds(-1),{startDate:a,formattedDate:e.formatDateLite(a),endDate:l,content:this.xsmall?this.months[s].label.substr(0,3):this.months[s].label,current:s===n.getMonth()&&i===n.getFullYear()}}));break;case"month":{const i=this.view.startDate.getMonth(),n=new Date(this.view.firstCellDate);s=!1,t=Array.apply(null,Array(42)).map(((t,a)=>{const l=e.addDays(n,a),o=new Date(l);o.setHours(23,59,59,0);const r=!s&&e.isToday(l)&&!s++;return{startDate:l,formattedDate:e.formatDateLite(l),endDate:o,content:l.getDate(),today:r,outOfScope:l.getMonth()!==i,class:`vuecal__cell--day${l.getDay()||7}`}})),(this.hideWeekends||this.hideWeekdays.length)&&(t=t.filter((e=>{const t=e.startDate.getDay()||7;return!(this.hideWeekends&&t>=6||this.hideWeekdays.length&&this.hideWeekdays.includes(t))})));break}case"week":{s=!1;const i=this.view.startDate,n=this.weekDays;t=n.map(((t,n)=>{const a=e.addDays(i,this.startWeekOnSunday?n-1:n),l=new Date(a);l.setHours(23,59,59,0);const o=(a.getDay()||7)-1;return{startDate:a,formattedDate:e.formatDateLite(a),endDate:l,today:!s&&e.isToday(a)&&!s++,specialHours:this.specialDayHours[o]||[]}})).filter(((e,t)=>!n[t].hide));break}case"day":{const i=this.view.startDate,s=new Date(this.view.startDate);s.setHours(23,59,59,0);const n=(i.getDay()||7)-1;t=[{startDate:i,formattedDate:e.formatDateLite(i),endDate:s,today:e.isToday(i),specialHours:this.specialDayHours[n]||[]}];break}}return t},visibleDaysCount(){return this.isDayView?1:7-this.weekDays.reduce(((e,t)=>e+t.hide),0)},cellWidth(){return 100/this.visibleDaysCount},cssClasses(){const{resizeAnEvent:e,dragAnEvent:t,dragCreateAnEvent:i}=this.domEvents;return{[`vuecal--${this.view.id}-view`]:!0,[`vuecal--${this.locale}`]:this.locale,"vuecal--no-time":!this.time,"vuecal--view-with-time":this.hasTimeColumn,"vuecal--week-numbers":this.showWeekNumbers&&this.isMonthView,"vuecal--twelve-hour":this.twelveHour,"vuecal--click-to-navigate":this.clickToNavigate,"vuecal--hide-weekends":this.hideWeekends,"vuecal--split-days":this.hasSplits,"vuecal--sticky-split-labels":this.hasSplits&&this.stickySplitLabels,"vuecal--overflow-x":this.minCellWidth&&this.isWeekView||this.hasSplits&&this.minSplitWidth,"vuecal--small":this.small,"vuecal--xsmall":this.xsmall,"vuecal--resizing-event":e._eid,"vuecal--drag-creating-event":i.event,"vuecal--dragging-event":t._eid,"vuecal--events-on-month-view":this.eventsOnMonthView,"vuecal--short-events":this.isMonthView&&"short"===this.eventsOnMonthView,"vuecal--has-touch":typeof window<"u"&&"ontouchstart"in window}},isYearsOrYearView(){return["years","year"].includes(this.view.id)},isYearsView(){return"years"===this.view.id},isYearView(){return"year"===this.view.id},isMonthView(){return"month"===this.view.id},isWeekOrDayView(){return["week","day"].includes(this.view.id)},isWeekView(){return"week"===this.view.id},isDayView(){return"day"===this.view.id}},watch:{events:{handler(e,t){this.updateMutableEvents(e),this.addEventsToView()},deep:!0},locale(e){this.loadLocale(e)},selectedDate(e){this.updateSelectedDate(e)},activeView(e){this.switchView(e)}}},[["render",function(e,t,D,f,_,b){const T=w("vuecal-header"),E=w("all-day-bar"),C=w("weekdays-headings"),S=w("vuecal-cell");return i(),s("div",{class:l(["vuecal__flex vuecal",b.cssClasses]),column:"",ref:"vuecal",lang:D.locale},[r(T,{options:e.$props,"edit-events":b.editEvents,"view-props":{views:b.views,weekDaysInHeader:b.weekDaysInHeader},"week-days":b.weekDays,"has-splits":b.hasSplits,"day-splits":b.daySplits,"switch-to-narrower-view":b.switchToNarrowerView},g({"arrow-prev":u((()=>[c(e.$slots,"arrow-prev",{},(()=>[p(" "),ve,p(" ")]))])),"arrow-next":u((()=>[c(e.$slots,"arrow-next",{},(()=>[p(" "),me,p(" ")]))])),"today-button":u((()=>[c(e.$slots,"today-button",{},(()=>[h("span",pe,v(_.texts.today),1)]))])),title:u((()=>[c(e.$slots,"title",{title:b.viewTitle,view:_.view},(()=>[p(v(b.viewTitle),1)]))])),_:2},[e.$slots["weekday-heading"]?{name:"weekday-heading",fn:u((({heading:t,view:i})=>[c(e.$slots,"weekday-heading",{heading:t,view:i})])),key:"0"}:void 0,e.$slots["split-label"]?{name:"split-label",fn:u((({split:t})=>[c(e.$slots,"split-label",{split:t,view:_.view.id})])),key:"1"}:void 0]),1032,["options","edit-events","view-props","week-days","has-splits","day-splits","switch-to-narrower-view"]),D.hideBody?m("",!0):(i(),s("div",we,[r(d,{name:`slide-fade--${_.transitionDirection}`,appear:D.transitions},{default:u((()=>[(i(),s("div",{class:"vuecal__flex",style:{"min-width":"100%"},key:!!D.transitions&&_.view.id,column:""},[D.showAllDayEvents&&b.hasTimeColumn&&(!b.cellOrSplitMinWidth||b.isDayView&&!D.minSplitWidth)?(i(),y(E,k(M({key:0},b.allDayBar)),{event:u((({event:t,view:n})=>[c(e.$slots,"event",{view:n,event:t},(()=>[b.editEvents.title&&t.titleEditable?(i(),s("div",{key:0,class:"vuecal__event-title vuecal__event-title--edit",contenteditable:"",onBlur:e=>b.onEventTitleBlur(e,t),innerHTML:t.title},null,40,ye)):t.title?(i(),s("div",{key:1,class:"vuecal__event-title",innerHTML:t.title},null,8,De)):m("",!0),!t.content||b.hasShortEvents||b.isShortMonthView?m("",!0):(i(),s("div",{key:2,class:"vuecal__event-content",innerHTML:t.content},null,8,ge))]))])),_:3},16)):m("",!0),h("div",{class:l(["vuecal__bg",{vuecal__flex:!b.hasTimeColumn}]),column:""},[h("div",fe,[b.hasTimeColumn?(i(),s("div",_e,[D.showAllDayEvents&&b.cellOrSplitMinWidth&&(!b.isDayView||D.minSplitWidth)?(i(),s("div",{key:0,class:"vuecal__all-day-text",style:o({height:b.allDayBar.height})},[h("span",null,v(_.texts.allDay),1)],4)):m("",!0),(i(!0),s(n,null,a(b.timeCells,((t,n)=>(i(),s("div",{class:"vuecal__time-cell",key:n,style:o(`height: ${D.timeCellHeight}px`)},[c(e.$slots,"time-cell",{hours:t.hours,minutes:t.minutes},(()=>[be,h("span",ke,v(t.label),1)]))],4)))),128))])):m("",!0),D.showWeekNumbers&&b.isMonthView?(i(),s("div",Me,[(i(),s(n,null,a(6,(t=>h("div",{class:"vuecal__flex vuecal__week-number-cell",key:t,grow:""},[c(e.$slots,"week-number-cell",{week:b.getWeekNumber(t-1)},(()=>[p(v(b.getWeekNumber(t-1)),1)]))]))),64))])):m("",!0),h("div",{class:l(["vuecal__flex vuecal__cells",`${_.view.id}-view`]),grow:"",wrap:!b.cellOrSplitMinWidth||!b.isWeekView,column:!!b.cellOrSplitMinWidth},[b.cellOrSplitMinWidth&&b.isWeekView?(i(),y(C,{key:0,"transition-direction":_.transitionDirection,"week-days":b.weekDays,"switch-to-narrower-view":b.switchToNarrowerView,style:o(b.cellOrSplitMinWidth?`min-width: ${b.cellOrSplitMinWidth}px`:"")},g({_:2},[e.$slots["weekday-heading"]?{name:"weekday-heading",fn:u((({heading:t,view:i})=>[c(e.$slots,"weekday-heading",{heading:t,view:i})])),key:"0"}:void 0,e.$slots["split-label"]?{name:"split-label",fn:u((({split:t})=>[c(e.$slots,"split-label",{split:t,view:_.view.id})])),key:"1"}:void 0]),1032,["transition-direction","week-days","switch-to-narrower-view","style"])):b.hasSplits&&D.stickySplitLabels&&D.minSplitWidth?(i(),s("div",{key:1,class:"vuecal__flex vuecal__split-days-headers",style:o(b.cellOrSplitMinWidth?`min-width: ${b.cellOrSplitMinWidth}px`:"")},[(i(!0),s(n,null,a(b.daySplits,((t,n)=>(i(),s("div",{class:l(["day-split-header",t.class||!1]),key:n},[c(e.$slots,"split-label",{split:t,view:_.view.id},(()=>[p(v(t.label),1)]))],2)))),128))],4)):m("",!0),D.showAllDayEvents&&b.hasTimeColumn&&(b.isWeekView&&b.cellOrSplitMinWidth||b.isDayView&&b.hasSplits&&D.minSplitWidth)?(i(),y(E,k(M({key:2},b.allDayBar)),{event:u((({event:t,view:n})=>[c(e.$slots,"event",{view:n,event:t},(()=>[b.editEvents.title&&t.titleEditable?(i(),s("div",{key:0,class:"vuecal__event-title vuecal__event-title--edit",contenteditable:"",onBlur:e=>b.onEventTitleBlur(e,t),innerHTML:t.title},null,40,Ee)):t.title?(i(),s("div",{key:1,class:"vuecal__event-title",innerHTML:t.title},null,8,Ce)):m("",!0),!t.content||b.hasShortEvents||b.isShortMonthView?m("",!0):(i(),s("div",{key:2,class:"vuecal__event-content",innerHTML:t.content},null,8,Se))]))])),_:3},16)):m("",!0),h("div",{class:"vuecal__flex",ref:e=>_.cellsEl=e,grow:"",wrap:!b.cellOrSplitMinWidth||!b.isWeekView,style:o(b.cellOrSplitMinWidth?`min-width: ${b.cellOrSplitMinWidth}px`:"")},[(i(!0),s(n,null,a(b.viewCells,((t,n)=>(i(),y(S,{key:n,options:e.$props,"edit-events":b.editEvents,data:t,"cell-width":D.hideWeekdays.length&&(b.isWeekView||b.isMonthView)&&b.cellWidth,"min-timestamp":b.minTimestamp,"max-timestamp":b.maxTimestamp,"cell-splits":b.hasSplits&&b.daySplits||[]},{"cell-content":u((({events:n,split:a,selectCell:l})=>[c(e.$slots,"cell-content",{cell:t,view:_.view,goNarrower:l,events:n},(()=>[a&&!D.stickySplitLabels?(i(),s("div",{key:0,class:"split-label",innerHTML:a.label},null,8,$e)):m("",!0),t.content?(i(),s("div",{key:1,class:"vuecal__cell-date",innerHTML:t.content},null,8,xe)):m("",!0),(b.isMonthView&&!D.eventsOnMonthView||b.isYearsOrYearView&&D.eventsCountOnYearView)&&n.length?(i(),s("div",We,[c(e.$slots,"events-count",{view:_.view,events:n},(()=>[p(v(n.length),1)]))])):m("",!0),!b.cellOrSplitHasEvents(n,a)&&b.isWeekOrDayView?(i(),s("div",je,[c(e.$slots,"no-event",{},(()=>[p(v(_.texts.noEvent),1)]))])):m("",!0)]))])),event:u((({event:n,view:a})=>[c(e.$slots,"event",{view:a,event:n},(()=>[b.editEvents.title&&n.titleEditable?(i(),s("div",{key:0,class:"vuecal__event-title vuecal__event-title--edit",contenteditable:"",onBlur:e=>b.onEventTitleBlur(e,n),innerHTML:n.title},null,40,He)):n.title?(i(),s("div",{key:1,class:"vuecal__event-title",innerHTML:n.title},null,8,Ve)):m("",!0),!D.time||n.allDay||b.isMonthView&&(n.allDay||"short"===D.showAllDayEvents)||b.isShortMonthView?m("",!0):(i(),s("div",Ae,[p(v(_.utils.date.formatTime(n.start,b.TimeFormat)),1),n.endTimeMinutes?(i(),s("span",Ye," - "+v(_.utils.date.formatTime(n.end,b.TimeFormat,null,!0)),1)):m("",!0),n.daysCount>1&&(n.segments[t.formattedDate]||{}).isFirstDay?(i(),s("small",Le," +"+v(n.daysCount-1)+v((_.texts.day[0]||"").toLowerCase()),1)):m("",!0)])),!n.content||b.isMonthView&&n.allDay&&"short"===D.showAllDayEvents||b.isShortMonthView?m("",!0):(i(),s("div",{key:3,class:"vuecal__event-content",innerHTML:n.content},null,8,Fe))]))])),"no-event":u((()=>[c(e.$slots,"no-event",{},(()=>[p(v(_.texts.noEvent),1)]))])),_:2},1032,["options","edit-events","data","cell-width","min-timestamp","max-timestamp","cell-splits"])))),128))],12,Oe)],10,Te)])],2)]))])),_:3},8,["name","appear"]),_.ready?m("",!0):(i(),s("div",Be,Ne))]))],10,ce)}]]);export{Re as default};
+  */
+let N, ee, te, O, z = {}, F = {};
+class he {
+  constructor(t) {
+    W(this, "_vuecal", null);
+    W(this, "selectCell", (t = !1, i, n) => {
+      this._vuecal.$emit("cell-click", n ? { date: i, split: n } : i), this._vuecal.clickToNavigate || t ? this._vuecal.switchToNarrowerView() : this._vuecal.dblclickToNavigate && "ontouchstart" in window && (this._vuecal.domEvents.dblTapACell.taps++, setTimeout(() => this._vuecal.domEvents.dblTapACell.taps = 0, this._vuecal.domEvents.dblTapACell.timeout), this._vuecal.domEvents.dblTapACell.taps >= 2 && (this._vuecal.domEvents.dblTapACell.taps = 0, this._vuecal.switchToNarrowerView(), this._vuecal.$emit("cell-dblclick", n ? { date: i, split: n } : i)));
+    });
+    W(this, "keyPressEnterCell", (t, i) => {
+      this._vuecal.$emit("cell-keypress-enter", i ? { date: t, split: i } : t), this._vuecal.switchToNarrowerView();
+    });
+    W(this, "getPosition", (t) => {
+      const { left: i, top: n } = this._vuecal.cellsEl.getBoundingClientRect(), { clientX: o, clientY: s } = "ontouchstart" in window && t.touches ? t.touches[0] : t;
+      return { x: o - i, y: s - n };
+    });
+    W(this, "minutesAtCursor", (t) => {
+      let i = 0, n = { x: 0, y: 0 };
+      const { timeStep: o, timeCellHeight: s, timeFrom: a } = this._vuecal.$props;
+      return typeof t == "number" ? i = t : typeof t == "object" && (n = this.getPosition(t), i = Math.round(n.y * o / parseInt(s) + a)), { minutes: Math.max(Math.min(i, 1440), 0), cursorCoords: n };
+    });
+    this._vuecal = t;
+  }
+}
+const q = 1440;
+let D, y, K;
+class ce {
+  constructor(t, i) {
+    W(this, "_vuecal", null);
+    W(this, "eventDefaults", { _eid: null, start: "", startTimeMinutes: 0, end: "", endTimeMinutes: 0, title: "", content: "", background: !1, allDay: !1, segments: null, repeat: null, daysCount: 1, deletable: !0, deleting: !1, titleEditable: !0, resizable: !0, resizing: !1, draggable: !0, dragging: !1, draggingStatic: !1, focused: !1, class: "" });
+    this._vuecal = t, D = i;
+  }
+  createAnEvent(t, i, n) {
+    if (typeof t == "string" && (t = D.stringToDate(t)), !(t instanceof Date))
+      return !1;
+    const o = D.dateToMinutes(t), s = o + (i = i || 120), a = D.addMinutes(new Date(t), i);
+    n.end && (typeof n.end == "string" && (n.end = D.stringToDate(n.end)), n.endTimeMinutes = D.dateToMinutes(n.end));
+    const l = { ...this.eventDefaults, _eid: `${this._vuecal._.uid}_${this._vuecal.eventIdIncrement++}`, start: t, startTimeMinutes: o, end: a, endTimeMinutes: s, segments: null, ...n };
+    return typeof this._vuecal.onEventCreate != "function" || this._vuecal.onEventCreate(l, () => this.deleteAnEvent(l)) ? (l.startDateF !== l.endDateF && (l.daysCount = D.countDays(l.start, l.end)), this._vuecal.mutableEvents.push(l), this._vuecal.addEventsToView([l]), this._vuecal.emitWithEvent("event-create", l), this._vuecal.$emit("event-change", { event: this._vuecal.cleanupEvent(l), originalEvent: null }), l) : void 0;
+  }
+  addEventSegment(t) {
+    t.segments || (t.segments = {}, t.segments[D.formatDateLite(t.start)] = { start: t.start, startTimeMinutes: t.startTimeMinutes, endTimeMinutes: q, isFirstDay: !0, isLastDay: !1 });
+    const i = t.segments[D.formatDateLite(t.end)];
+    i && (i.isLastDay = !1, i.endTimeMinutes = q);
+    const n = D.addDays(t.end, 1), o = D.formatDateLite(n);
+    return n.setHours(0, 0, 0, 0), t.segments[o] = { start: n, startTimeMinutes: 0, endTimeMinutes: t.endTimeMinutes, isFirstDay: !1, isLastDay: !0 }, t.end = D.addMinutes(n, t.endTimeMinutes), t.daysCount = Object.keys(t.segments).length, o;
+  }
+  removeEventSegment(t) {
+    let i = Object.keys(t.segments).length;
+    if (i <= 1)
+      return D.formatDateLite(t.end);
+    delete t.segments[D.formatDateLite(t.end)], i--;
+    const n = D.subtractDays(t.end, 1), o = D.formatDateLite(n), s = t.segments[o];
+    return i ? s && (s.isLastDay = !0, s.endTimeMinutes = t.endTimeMinutes) : t.segments = null, t.daysCount = i || 1, t.end = n, o;
+  }
+  createEventSegments(t, i, n) {
+    const o = i.getTime(), s = n.getTime();
+    let a, l, u, r = t.start.getTime(), d = t.end.getTime(), v = !1;
+    for (t.end.getHours() || t.end.getMinutes() || (d -= 1e3), t.segments = {}, t.repeat ? (a = o, l = Math.min(s, t.repeat.until ? D.stringToDate(t.repeat.until).getTime() : s)) : (a = Math.max(o, r), l = Math.min(s, d)); a <= l; ) {
+      let p = !1;
+      const E = D.addDays(new Date(a), 1).setHours(0, 0, 0, 0);
+      let _, x, V, C;
+      if (t.repeat) {
+        const Y = new Date(a), A = D.formatDateLite(Y);
+        (v || t.occurrences && t.occurrences[A]) && (v || (r = t.occurrences[A].start, u = new Date(r).setHours(0, 0, 0, 0), d = t.occurrences[A].end), v = !0, p = !0), _ = a === u, x = A === D.formatDateLite(new Date(d)), V = new Date(_ ? r : a), C = D.formatDateLite(V), x && (v = !1);
+      } else
+        p = !0, _ = a === r, x = l === d && E > l, V = _ ? t.start : new Date(a), C = D.formatDateLite(_ ? t.start : V);
+      p && (t.segments[C] = { start: V, startTimeMinutes: _ ? t.startTimeMinutes : 0, endTimeMinutes: x ? t.endTimeMinutes : q, isFirstDay: _, isLastDay: x }), a = E;
+    }
+    return t;
+  }
+  deleteAnEvent(t) {
+    this._vuecal.emitWithEvent("event-delete", t), this._vuecal.mutableEvents = this._vuecal.mutableEvents.filter((i) => i._eid !== t._eid), this._vuecal.view.events = this._vuecal.view.events.filter((i) => i._eid !== t._eid);
+  }
+  checkCellOverlappingEvents(t, i) {
+    K = t.slice(0), y = {}, t.forEach((s) => {
+      K.shift(), y[s._eid] || (y[s._eid] = { overlaps: [], start: s.start, end: s.end, position: 0 }), y[s._eid].position = 0, K.forEach((a) => {
+        y[a._eid] || (y[a._eid] = { overlaps: [], start: a.start, end: a.end, position: 0 });
+        const l = this.eventInRange(a, s.start, s.end), u = i.overlapsPerTimeStep ? D.datesInSameTimeStep(s.start, a.start, i.timeStep) : 1;
+        if (s.background || s.allDay || a.background || a.allDay || !l || !u) {
+          let r, d;
+          (r = (y[s._eid] || { overlaps: [] }).overlaps.indexOf(a._eid)) > -1 && y[s._eid].overlaps.splice(r, 1), (d = (y[a._eid] || { overlaps: [] }).overlaps.indexOf(s._eid)) > -1 && y[a._eid].overlaps.splice(d, 1), y[a._eid].position--;
+        } else
+          y[s._eid].overlaps.push(a._eid), y[s._eid].overlaps = [...new Set(y[s._eid].overlaps)], y[a._eid].overlaps.push(s._eid), y[a._eid].overlaps = [...new Set(y[a._eid].overlaps)], y[a._eid].position++;
+      });
+    });
+    let n = 0;
+    const o = /* @__PURE__ */ new Map();
+    for (const s in y) {
+      const a = y[s], l = a.overlaps.map((d) => ({ id: d, start: y[d].start, end: y[d].end }));
+      l.push({ id: s, start: a.start, end: a.end }), l.sort((d, v) => d.start.valueOf() === v.start.valueOf() && d.end.valueOf() === v.end.valueOf() ? d.id < v.id ? -1 : 1 : d.start < v.start ? -1 : d.start > v.start || d.end < v.end ? 1 : -1);
+      const u = l.map((d) => o.get(d.id)).filter((d) => d !== void 0);
+      let r = 0;
+      for (; u.includes(r); )
+        r++;
+      o.set(s, r), a.position = r, n = Math.max(this.getOverlapsStreak(a, y), n);
+    }
+    return [y, n];
+  }
+  getOverlapsStreak(t, i = {}) {
+    let n = t.overlaps.length + 1, o = [];
+    return t.overlaps.forEach((s) => {
+      o.includes(s) || t.overlaps.filter((a) => a !== s).forEach((a) => {
+        i[a].overlaps.includes(s) || o.push(a);
+      });
+    }), o = [...new Set(o)], n -= o.length, n;
+  }
+  eventInRange(t, i, n) {
+    if (t.allDay || !this._vuecal.time) {
+      const a = new Date(t.start).setHours(0, 0, 0, 0);
+      return new Date(t.end).setHours(23, 59, 0, 0) >= new Date(i).setHours(0, 0, 0, 0) && a <= new Date(n).setHours(0, 0, 0, 0);
+    }
+    const o = t.start.getTime(), s = t.end.getTime();
+    return o < n.getTime() && s > i.getTime();
+  }
+}
+const ve = { class: "vuecal__flex vuecal__weekdays-headings" }, me = ["onClick"], pe = { class: "vuecal__flex weekday-label", grow: "" }, we = { class: "full" }, ye = { class: "small" }, De = { class: "xsmall" }, ge = { key: 0 }, fe = { key: 0, class: "vuecal__flex vuecal__split-days-headers", grow: "" }, B = (e, t) => {
+  const i = e.__vccOpts || e;
+  for (const [n, o] of t)
+    i[n] = o;
+  return i;
+}, ne = B({ inject: ["vuecal", "utils", "view"], props: { transitionDirection: { type: String, default: "right" }, weekDays: { type: Array, default: () => [] }, switchToNarrowerView: { type: Function, default: () => {
+} } }, methods: { selectCell(e, t) {
+  e.getTime() !== this.view.selectedDate.getTime() && (this.view.selectedDate = e), this.utils.cell.selectCell(!1, e, t);
+}, cleanupHeading: (e) => ({ label: e.full, date: e.date, ...e.today ? { today: e.today } : {} }) }, computed: { headings() {
+  if (!["month", "week"].includes(this.view.id))
+    return [];
+  let e = !1;
+  return this.weekDays.map((t, i) => {
+    const n = this.utils.date.addDays(this.view.startDate, this.vuecal.startWeekOnSunday ? i - 1 : i);
+    return { hide: t.hide, full: t.label, small: t.short || t.label.substr(0, 3), xsmall: t.short || t.label.substr(0, 1), ...this.view.id === "week" ? { dayOfMonth: n.getDate(), date: n, today: !e && this.utils.date.isToday(n) && !e++ } : {} };
+  });
+}, cellWidth() {
+  return 100 / (7 - this.weekDays.reduce((e, t) => e + t.hide, 0));
+}, weekdayCellStyles() {
+  return { ...this.vuecal.hideWeekdays.length ? { width: `${this.cellWidth}%` } : {} };
+}, cellHeadingsClickable() {
+  return this.view.id === "week" && (this.vuecal.clickToNavigate || this.vuecal.dblclickToNavigate);
+} } }, [["render", function(e, t, i, n, o, s) {
+  return h(), c("div", ve, [(h(!0), c(T, null, S(s.headings, (a, l) => (h(), c(T, { key: l }, [a.hide ? m("", !0) : (h(), c("div", { key: 0, class: b(["vuecal__flex vuecal__heading", { today: a.today, clickable: s.cellHeadingsClickable }]), style: $(s.weekdayCellStyles), onClick: (u) => s.view.id === "week" && s.selectCell(a.date, u), onDblclick: t[0] || (t[0] = (u) => s.view.id === "week" && s.vuecal.dblclickToNavigate && i.switchToNarrowerView()) }, [U(R, { name: `slide-fade--${i.transitionDirection}`, appear: s.vuecal.transitions }, { default: g(() => [(h(), c("div", { class: "vuecal__flex", column: "", key: !!s.vuecal.transitions && `${l}-${a.dayOfMonth}` }, [k("div", pe, [w(e.$slots, "weekday-heading", { heading: s.cleanupHeading(a), view: s.view }, () => [k("span", we, f(a.full), 1), k("span", ye, f(a.small), 1), k("span", De, f(a.xsmall), 1), a.dayOfMonth ? (h(), c("span", ge, "\xA0" + f(a.dayOfMonth), 1)) : m("", !0)])]), s.vuecal.hasSplits && s.vuecal.stickySplitLabels ? (h(), c("div", fe, [(h(!0), c(T, null, S(s.vuecal.daySplits, (u, r) => (h(), c("div", { class: b(["day-split-header", u.class || !1]), key: r }, [w(e.$slots, "split-label", { split: u, view: s.view }, () => [M(f(u.label), 1)])], 2))), 128))])) : m("", !0)]))]), _: 2 }, 1032, ["name", "appear"])], 46, me))], 64))), 128))]);
+}]]), _e = { class: "vuecal__header" }, ke = { key: 0, class: "vuecal__flex vuecal__menu", role: "tablist", "aria-label": "Calendar views navigation" }, be = ["onDragenter", "onDragleave", "onClick", "aria-label"], Te = { key: 1, class: "vuecal__title-bar" }, Ee = ["aria-label"], Ce = { class: "vuecal__flex vuecal__title", grow: "" }, Me = ["aria-label"], Se = { key: 0, class: "vuecal__flex vuecal__split-days-headers" }, Oe = B({ inject: ["vuecal", "previous", "next", "switchView", "updateSelectedDate", "modules", "view"], components: { WeekdaysHeadings: ne }, props: { options: { type: Object, default: () => ({}) }, editEvents: { type: Object, required: !0 }, hasSplits: { type: [Boolean, Number], default: !1 }, daySplits: { type: Array, default: () => [] }, viewProps: { type: Object, default: () => ({}) }, weekDays: { type: Array, default: () => [] }, switchToNarrowerView: { type: Function, default: () => {
+} } }, data: () => ({ highlightedControl: null }), methods: { goToToday() {
+  this.updateSelectedDate(new Date(new Date().setHours(0, 0, 0, 0)));
+}, switchToBroaderView() {
+  this.transitionDirection = "left", this.broaderView && this.switchView(this.broaderView);
+} }, computed: { transitionDirection: { get() {
+  return this.vuecal.transitionDirection;
+}, set(e) {
+  this.vuecal.transitionDirection = e;
+} }, broaderView() {
+  const { enabledViews: e } = this.vuecal;
+  return e[e.indexOf(this.view.id) - 1];
+}, showDaySplits() {
+  return this.view.id === "day" && this.hasSplits && this.options.stickySplitLabels && !this.options.minSplitWidth;
+}, dnd() {
+  return this.modules.dnd;
+} } }, [["render", function(e, t, i, n, o, s) {
+  const a = j("weekdays-headings");
+  return h(), c("div", _e, [i.options.hideViewSelector ? m("", !0) : (h(), c("div", ke, [(h(!0), c(T, null, S(i.viewProps.views, (l, u) => (h(), c(T, { key: u }, [l.enabled ? (h(), c("button", { key: 0, class: b(["vuecal__view-btn", { "vuecal__view-btn--active": s.view.id === u, "vuecal__view-btn--highlighted": e.highlightedControl === u }]), type: "button", onDragenter: (r) => i.editEvents.drag && s.dnd && s.dnd.viewSelectorDragEnter(r, u, e.$data), onDragleave: (r) => i.editEvents.drag && s.dnd && s.dnd.viewSelectorDragLeave(r, u, e.$data), onClick: (r) => s.switchView(u, null, !0), "aria-label": `${l.label} view` }, f(l.label), 43, be)) : m("", !0)], 64))), 128))])), i.options.hideTitleBar ? m("", !0) : (h(), c("div", Te, [k("button", { class: b(["vuecal__arrow vuecal__arrow--prev", { "vuecal__arrow--highlighted": e.highlightedControl === "previous" }]), type: "button", onClick: t[0] || (t[0] = (...l) => s.previous && s.previous(...l)), onDragenter: t[1] || (t[1] = (l) => i.editEvents.drag && s.dnd && s.dnd.viewSelectorDragEnter(l, "previous", e.$data)), onDragleave: t[2] || (t[2] = (l) => i.editEvents.drag && s.dnd && s.dnd.viewSelectorDragLeave(l, "previous", e.$data)), "aria-label": `Previous ${s.view.id}` }, [w(e.$slots, "arrow-prev")], 42, Ee), k("div", Ce, [U(R, { name: i.options.transitions ? `slide-fade--${s.transitionDirection}` : "" }, { default: g(() => [(h(), H(de(s.broaderView ? "button" : "span"), { type: !!s.broaderView && "button", key: `${s.view.id}${s.view.startDate.toString()}`, onClick: t[3] || (t[3] = (l) => !!s.broaderView && s.switchToBroaderView()), "aria-label": !!s.broaderView && `Go to ${s.broaderView} view` }, { default: g(() => [w(e.$slots, "title")]), _: 3 }, 8, ["type", "aria-label"]))]), _: 3 }, 8, ["name"])]), i.options.todayButton ? (h(), c("button", { key: 0, class: b(["vuecal__today-btn", { "vuecal__today-btn--highlighted": e.highlightedControl === "today" }]), type: "button", onClick: t[4] || (t[4] = (...l) => s.goToToday && s.goToToday(...l)), onDragenter: t[5] || (t[5] = (l) => i.editEvents.drag && s.dnd && s.dnd.viewSelectorDragEnter(l, "today", e.$data)), onDragleave: t[6] || (t[6] = (l) => i.editEvents.drag && s.dnd && s.dnd.viewSelectorDragLeave(l, "today", e.$data)), "aria-label": "Today" }, [w(e.$slots, "today-button")], 34)) : m("", !0), k("button", { class: b(["vuecal__arrow vuecal__arrow--next", { "vuecal__arrow--highlighted": e.highlightedControl === "next" }]), type: "button", onClick: t[7] || (t[7] = (...l) => s.next && s.next(...l)), onDragenter: t[8] || (t[8] = (l) => i.editEvents.drag && s.dnd && s.dnd.viewSelectorDragEnter(l, "next", e.$data)), onDragleave: t[9] || (t[9] = (l) => i.editEvents.drag && s.dnd && s.dnd.viewSelectorDragLeave(l, "next", e.$data)), "aria-label": `Next ${s.view.id}` }, [w(e.$slots, "arrow-next")], 42, Me)])), i.viewProps.weekDaysInHeader ? (h(), H(a, { key: 2, "week-days": i.weekDays, "transition-direction": s.transitionDirection, "switch-to-narrower-view": i.switchToNarrowerView }, X({ _: 2 }, [e.$slots["weekday-heading"] ? { name: "weekday-heading", fn: g(({ heading: l, view: u }) => [w(e.$slots, "weekday-heading", { heading: l, view: u })]), key: "0" } : void 0, e.$slots["split-label"] ? { name: "split-label", fn: g(({ split: l }) => [w(e.$slots, "split-label", { split: l, view: s.view })]), key: "1" } : void 0]), 1032, ["week-days", "transition-direction", "switch-to-narrower-view"])) : m("", !0), U(R, { name: `slide-fade--${s.transitionDirection}` }, { default: g(() => [s.showDaySplits ? (h(), c("div", Se, [(h(!0), c(T, null, S(i.daySplits, (l, u) => (h(), c("div", { class: b(["day-split-header", l.class || !1]), key: u }, [w(e.$slots, "split-label", { split: l, view: s.view.id }, () => [M(f(l.label), 1)])], 2))), 128))])) : m("", !0)]), _: 3 }, 8, ["name"])]);
+}]]), $e = ["draggable"], xe = { inject: ["vuecal", "utils", "modules", "view", "domEvents", "editEvents"], props: { cellFormattedDate: { type: String, default: "" }, event: { type: Object, default: () => ({}) }, cellEvents: { type: Array, default: () => [] }, overlaps: { type: Array, default: () => [] }, eventPosition: { type: Number, default: 0 }, overlapsStreak: { type: Number, default: 0 }, allDay: { type: Boolean, default: !1 } }, data: () => ({ touch: { dragThreshold: 30, startX: 0, startY: 0, dragged: !1 } }), methods: { onMouseDown(e, t = !1) {
+  if ("ontouchstart" in window && !t)
+    return !1;
+  const { clickHoldAnEvent: i, focusAnEvent: n, resizeAnEvent: o, dragAnEvent: s } = this.domEvents;
+  if (n._eid === this.event._eid && i._eid === this.event._eid)
+    return !0;
+  this.focusEvent(), i._eid = null, this.vuecal.editEvents.delete && this.event.deletable && (i.timeoutId = setTimeout(() => {
+    o._eid || s._eid || (i._eid = this.event._eid, this.event.deleting = !0);
+  }, i.timeout));
+}, onMouseUp(e) {
+  this.domEvents.focusAnEvent._eid !== this.event._eid || this.touch.dragged || (this.domEvents.focusAnEvent.mousedUp = !0), this.touch.dragged = !1;
+}, onMouseEnter(e) {
+  e.preventDefault(), this.vuecal.emitWithEvent("event-mouse-enter", this.event);
+}, onMouseLeave(e) {
+  e.preventDefault(), this.vuecal.emitWithEvent("event-mouse-leave", this.event);
+}, onTouchMove(e) {
+  if (typeof this.vuecal.onEventClick != "function")
+    return;
+  const { clientX: t, clientY: i } = e.touches[0], { startX: n, startY: o, dragThreshold: s } = this.touch;
+  (Math.abs(t - n) > s || Math.abs(i - o) > s) && (this.touch.dragged = !0);
+}, onTouchStart(e) {
+  this.touch.startX = e.touches[0].clientX, this.touch.startY = e.touches[0].clientY, this.onMouseDown(e, !0);
+}, onEnterKeypress(e) {
+  if (typeof this.vuecal.onEventClick == "function")
+    return this.vuecal.onEventClick(this.event, e);
+}, onDblClick(e) {
+  if (typeof this.vuecal.onEventDblclick == "function")
+    return this.vuecal.onEventDblclick(this.event, e);
+}, onDragStart(e) {
+  this.dnd && this.dnd.eventDragStart(e, this.event);
+}, onDragEnd() {
+  this.dnd && this.dnd.eventDragEnd(this.event);
+}, onResizeHandleMouseDown() {
+  this.focusEvent(), this.domEvents.dragAnEvent._eid = null, this.domEvents.resizeAnEvent = Object.assign(this.domEvents.resizeAnEvent, { _eid: this.event._eid, start: (this.segment || this.event).start, split: this.event.split || null, segment: !!this.segment && this.utils.date.formatDateLite(this.segment.start), originalEnd: new Date((this.segment || this.event).end), originalEndTimeMinutes: this.event.endTimeMinutes }), this.event.resizing = !0;
+}, deleteEvent(e = !1) {
+  if ("ontouchstart" in window && !e)
+    return !1;
+  this.utils.event.deleteAnEvent(this.event);
+}, touchDeleteEvent(e) {
+  this.deleteEvent(!0);
+}, cancelDeleteEvent() {
+  this.event.deleting = !1;
+}, focusEvent() {
+  const { focusAnEvent: e } = this.domEvents, t = e._eid;
+  if (t !== this.event._eid) {
+    if (t) {
+      const i = this.view.events.find((n) => n._eid === t);
+      i && (i.focused = !1);
+    }
+    this.vuecal.cancelDelete(), this.vuecal.emitWithEvent("event-focus", this.event), e._eid = this.event._eid, this.event.focused = !0;
+  }
+} }, computed: { eventDimensions() {
+  const { startTimeMinutes: e, endTimeMinutes: t } = this.segment || this.event;
+  let i = e - this.vuecal.timeFrom;
+  const n = Math.max(Math.round(i * this.vuecal.timeCellHeight / this.vuecal.timeStep), 0);
+  i = Math.min(t, this.vuecal.timeTo) - this.vuecal.timeFrom;
+  const o = Math.round(i * this.vuecal.timeCellHeight / this.vuecal.timeStep);
+  return { top: n, height: Math.max(o - n, 5) };
+}, eventStyles() {
+  if (this.event.allDay || !this.vuecal.time || !this.event.endTimeMinutes || this.view.id === "month" || this.allDay)
+    return {};
+  const e = Math.min(this.overlaps.length + 1, this.overlapsStreak);
+  let t = 100 / e, i = 100 / e * this.eventPosition;
+  this.vuecal.minEventWidth && t < this.vuecal.minEventWidth && (t = this.vuecal.minEventWidth, i = (100 - this.vuecal.minEventWidth) / this.overlaps.length * this.eventPosition);
+  const { top: n, height: o } = this.eventDimensions;
+  return { top: `${n}px`, height: `${o}px`, width: `${t}%`, left: this.event.left && `${this.event.left}px` || `${i}%` };
+}, eventClasses() {
+  const { isFirstDay: e, isLastDay: t } = this.segment || {};
+  return { [this.event.class]: !!this.event.class, "vuecal__event--focus": this.event.focused, "vuecal__event--resizing": this.event.resizing, "vuecal__event--background": this.event.background, "vuecal__event--deletable": this.event.deleting, "vuecal__event--all-day": this.event.allDay, "vuecal__event--dragging": !this.event.draggingStatic && this.event.dragging, "vuecal__event--static": this.event.dragging && this.event.draggingStatic, "vuecal__event--multiple-days": !!this.segment, "event-start": this.segment && e && !t, "event-middle": this.segment && !e && !t, "event-end": this.segment && t && !e };
+}, segment() {
+  return this.event.segments && this.event.segments[this.cellFormattedDate] || null;
+}, draggable() {
+  const { draggable: e, background: t, daysCount: i } = this.event;
+  return this.vuecal.editEvents.drag && e && !t && i === 1;
+}, resizable() {
+  const { editEvents: e, time: t } = this.vuecal;
+  return e.resize && this.event.resizable && t && !this.allDay && (!this.segment || this.segment && this.segment.isLastDay) && this.view.id !== "month";
+}, dnd() {
+  return this.modules.dnd;
+} } }, We = ["data-split", "aria-label", "onTouchstart", "onMousedown", "onDragover", "onDrop"], He = { key: 0, class: "cell-time-labels" }, Ve = ["innerHTML"], Ae = { key: 2, class: "vuecal__cell-events" }, je = ["title"], ae = B({ inject: ["vuecal", "utils", "modules", "view", "domEvents"], components: { Event: B(xe, [["render", function(e, t, i, n, o, s) {
+  return h(), c("div", { class: b(["vuecal__event", s.eventClasses]), style: $(s.eventStyles), tabindex: "0", onFocus: t[4] || (t[4] = (...a) => s.focusEvent && s.focusEvent(...a)), onKeypress: t[5] || (t[5] = Z(L((...a) => s.onEnterKeypress && s.onEnterKeypress(...a), ["stop"]), ["enter"])), onMouseenter: t[6] || (t[6] = (...a) => s.onMouseEnter && s.onMouseEnter(...a)), onMouseleave: t[7] || (t[7] = (...a) => s.onMouseLeave && s.onMouseLeave(...a)), onTouchstart: t[8] || (t[8] = L((...a) => s.onTouchStart && s.onTouchStart(...a), ["stop"])), onMousedown: t[9] || (t[9] = (a) => s.onMouseDown(a)), onMouseup: t[10] || (t[10] = (...a) => s.onMouseUp && s.onMouseUp(...a)), onTouchend: t[11] || (t[11] = (...a) => s.onMouseUp && s.onMouseUp(...a)), onTouchmove: t[12] || (t[12] = (...a) => s.onTouchMove && s.onTouchMove(...a)), onDblclick: t[13] || (t[13] = (...a) => s.onDblClick && s.onDblClick(...a)), draggable: s.draggable, onDragstart: t[14] || (t[14] = (a) => s.draggable && s.onDragStart(a)), onDragend: t[15] || (t[15] = (a) => s.draggable && s.onDragEnd()) }, [s.vuecal.editEvents.delete && i.event.deletable ? (h(), c("div", { key: 0, class: "vuecal__event-delete", onClick: t[0] || (t[0] = L((...a) => s.deleteEvent && s.deleteEvent(...a), ["stop"])), onTouchstart: t[1] || (t[1] = L((...a) => s.touchDeleteEvent && s.touchDeleteEvent(...a), ["stop"])) }, f(s.vuecal.texts.deleteEvent), 33)) : m("", !0), w(e.$slots, "event", { event: i.event, view: s.view.id }), s.resizable ? (h(), c("div", { key: 1, class: "vuecal__event-resize-handle", contenteditable: "false", onMousedown: t[2] || (t[2] = L((...a) => s.onResizeHandleMouseDown && s.onResizeHandleMouseDown(...a), ["stop", "prevent"])), onTouchstart: t[3] || (t[3] = L((...a) => s.onResizeHandleMouseDown && s.onResizeHandleMouseDown(...a), ["stop", "prevent"])) }, null, 32)) : m("", !0)], 46, $e);
+}]]) }, props: { options: { type: Object, default: () => ({}) }, editEvents: { type: Object, required: !0 }, data: { type: Object, required: !0 }, cellSplits: { type: Array, default: () => [] }, minTimestamp: { type: [Number, null], default: null }, maxTimestamp: { type: [Number, null], default: null }, cellWidth: { type: [Number, Boolean], default: !1 }, allDay: { type: Boolean, default: !1 } }, data: () => ({ cellOverlaps: {}, cellOverlapsStreak: 1, timeAtCursor: null, highlighted: !1, highlightedSplit: null }), methods: { getSplitAtCursor({ target: e }) {
+  let t = e.classList.contains("vuecal__cell-split") ? e : this.vuecal.findAncestor(e, "vuecal__cell-split");
+  return t && (t = t.attributes["data-split"].value, parseInt(t).toString() === t.toString() && (t = parseInt(t))), t || null;
+}, splitClasses(e) {
+  return { "vuecal__cell-split": !0, "vuecal__cell-split--highlighted": this.highlightedSplit === e.id, [e.class]: !!e.class };
+}, checkCellOverlappingEvents() {
+  this.options.time && this.eventsCount && !this.splitsCount && (this.eventsCount === 1 ? (this.cellOverlaps = [], this.cellOverlapsStreak = 1) : [this.cellOverlaps, this.cellOverlapsStreak] = this.utils.event.checkCellOverlappingEvents(this.events, this.options));
+}, isDOMElementAnEvent(e) {
+  return this.vuecal.isDOMElementAnEvent(e);
+}, selectCell(e, t = !1) {
+  const i = this.splitsCount ? this.getSplitAtCursor(e) : null;
+  this.utils.cell.selectCell(t, this.timeAtCursor, i), this.timeAtCursor = null;
+}, onCellkeyPressEnter(e) {
+  this.isSelected || this.onCellFocus(e);
+  const t = this.splitsCount ? this.getSplitAtCursor(e) : null;
+  this.utils.cell.keyPressEnterCell(this.timeAtCursor, t), this.timeAtCursor = null;
+}, onCellFocus(e) {
+  if (!this.isSelected && !this.isDisabled) {
+    this.isSelected = this.data.startDate;
+    const t = this.splitsCount ? this.getSplitAtCursor(e) : null, i = this.timeAtCursor || this.data.startDate;
+    this.vuecal.$emit("cell-focus", t ? { date: i, split: t } : i);
+  }
+}, onCellMouseDown(e, t = null, i = !1) {
+  if ("ontouchstart" in window && !i)
+    return !1;
+  this.isSelected || this.onCellFocus(e);
+  const { clickHoldACell: n, focusAnEvent: o } = this.domEvents;
+  this.domEvents.cancelClickEventCreation = !1, n.eventCreated = !1, this.timeAtCursor = new Date(this.data.startDate);
+  const { minutes: s, cursorCoords: { y: a } } = this.vuecal.minutesAtCursor(e);
+  this.timeAtCursor.setMinutes(s);
+  const l = this.isDOMElementAnEvent(e.target);
+  !l && o._eid && ((this.view.events.find((u) => u._eid === o._eid) || {}).focused = !1), this.editEvents.create && !l && this.setUpEventCreation(e, a);
+}, setUpEventCreation(e, t) {
+  if (this.options.dragToCreateEvent && ["week", "day"].includes(this.view.id)) {
+    const { dragCreateAnEvent: i } = this.domEvents;
+    if (i.startCursorY = t, i.split = this.splitsCount ? this.getSplitAtCursor(e) : null, i.start = this.timeAtCursor, this.options.snapToTime) {
+      let n = 60 * this.timeAtCursor.getHours() + this.timeAtCursor.getMinutes();
+      const o = n + this.options.snapToTime / 2;
+      n = o - o % this.options.snapToTime, i.start.setHours(0, n, 0, 0);
+    }
+  } else
+    this.options.cellClickHold && ["month", "week", "day"].includes(this.view.id) && this.setUpCellHoldTimer(e);
+}, setUpCellHoldTimer(e) {
+  const { clickHoldACell: t } = this.domEvents;
+  t.cellId = `${this.vuecal._.uid}_${this.data.formattedDate}`, t.split = this.splitsCount ? this.getSplitAtCursor(e) : null, t.timeoutId = setTimeout(() => {
+    if (t.cellId && !this.domEvents.cancelClickEventCreation) {
+      const { _eid: i } = this.utils.event.createAnEvent(this.timeAtCursor, null, t.split ? { split: t.split } : {});
+      t.eventCreated = i;
+    }
+  }, t.timeout);
+}, onCellTouchStart(e, t = null) {
+  this.onCellMouseDown(e, t, !0);
+}, onCellClick(e) {
+  this.isDOMElementAnEvent(e.target) || this.selectCell(e);
+}, onCellDblClick(e) {
+  const t = new Date(this.data.startDate);
+  t.setMinutes(this.vuecal.minutesAtCursor(e).minutes);
+  const i = this.splitsCount ? this.getSplitAtCursor(e) : null;
+  this.vuecal.$emit("cell-dblclick", i ? { date: t, split: i } : t), this.options.dblclickToNavigate && this.vuecal.switchToNarrowerView();
+}, onCellContextMenu(e) {
+  e.stopPropagation(), e.preventDefault();
+  const t = new Date(this.data.startDate), { cursorCoords: i, minutes: n } = this.vuecal.minutesAtCursor(e);
+  t.setMinutes(n);
+  const o = this.splitsCount ? this.getSplitAtCursor(e) : null;
+  this.vuecal.$emit("cell-contextmenu", { date: t, ...i, ...o || {}, e });
+} }, computed: { dnd() {
+  return this.modules.dnd;
+}, nowInMinutes() {
+  return this.utils.date.dateToMinutes(this.vuecal.now);
+}, isBeforeMinDate() {
+  return this.minTimestamp !== null && this.minTimestamp > this.data.endDate.getTime();
+}, isAfterMaxDate() {
+  return this.maxTimestamp && this.maxTimestamp < this.data.startDate.getTime();
+}, isDisabled() {
+  const { disableDays: e } = this.options, { isYearsOrYearView: t } = this.vuecal;
+  return !(!e.length || !e.includes(this.data.formattedDate) || t) || this.isBeforeMinDate || this.isAfterMaxDate;
+}, isSelected: { get() {
+  let e = !1;
+  const { selectedDate: t } = this.view;
+  return e = this.view.id === "years" ? t.getFullYear() === this.data.startDate.getFullYear() : this.view.id === "year" ? t.getFullYear() === this.data.startDate.getFullYear() && t.getMonth() === this.data.startDate.getMonth() : t.getTime() === this.data.startDate.getTime(), e;
+}, set(e) {
+  this.view.selectedDate = e, this.vuecal.$emit("update:selected-date", this.view.selectedDate);
+} }, isWeekOrDayView() {
+  return ["week", "day"].includes(this.view.id);
+}, transitionDirection() {
+  return this.vuecal.transitionDirection;
+}, specialHours() {
+  return this.data.specialHours.map((e) => {
+    let { from: t, to: i } = e;
+    return t = Math.max(t, this.options.timeFrom), i = Math.min(i, this.options.timeTo), { ...e, height: (i - t) * this.timeScale, top: (t - this.options.timeFrom) * this.timeScale };
+  });
+}, events() {
+  const { startDate: e, endDate: t } = this.data;
+  let i = [];
+  if (!["years", "year"].includes(this.view.id) || this.options.eventsCountOnYearView) {
+    if (i = this.view.events.slice(0), this.view.id === "month" && i.push(...this.view.outOfScopeEvents), i = i.filter((n) => this.utils.event.eventInRange(n, e, t)), this.options.showAllDayEvents && this.view.id !== "month" && (i = i.filter((n) => !!n.allDay === this.allDay)), this.options.time && this.isWeekOrDayView && !this.allDay) {
+      const { timeFrom: n, timeTo: o } = this.options;
+      i = i.filter((s) => {
+        const a = s.daysCount > 1 && s.segments[this.data.formattedDate] || {}, l = s.daysCount === 1 && s.startTimeMinutes < o && s.endTimeMinutes > n, u = s.daysCount > 1 && a.startTimeMinutes < o && a.endTimeMinutes > n;
+        return s.allDay || l || u || !1;
+      });
+    }
+    !this.options.time || !this.isWeekOrDayView || this.options.showAllDayEvents && this.allDay || i.sort((n, o) => n.start < o.start ? -1 : 1), this.cellSplits.length || this.$nextTick(this.checkCellOverlappingEvents);
+  }
+  return i;
+}, eventsCount() {
+  return this.events.length;
+}, splits() {
+  return this.cellSplits.map((e, t) => {
+    const i = this.events.filter((s) => s.split === e.id), [n, o] = this.utils.event.checkCellOverlappingEvents(i.filter((s) => !s.background && !s.allDay), this.options);
+    return { ...e, overlaps: n, overlapsStreak: o, events: i };
+  });
+}, splitsCount() {
+  return this.splits.length;
+}, cellClasses() {
+  return { [this.data.class]: !!this.data.class, "vuecal__cell--current": this.data.current, "vuecal__cell--today": this.data.today, "vuecal__cell--out-of-scope": this.data.outOfScope, "vuecal__cell--before-min": this.isDisabled && this.isBeforeMinDate, "vuecal__cell--after-max": this.isDisabled && this.isAfterMaxDate, "vuecal__cell--disabled": this.isDisabled, "vuecal__cell--selected": this.isSelected, "vuecal__cell--highlighted": this.highlighted, "vuecal__cell--has-splits": this.splitsCount, "vuecal__cell--has-events": this.eventsCount };
+}, cellStyles() {
+  return { ...this.cellWidth ? { width: `${this.cellWidth}%` } : {} };
+}, timelineVisible() {
+  const { time: e, timeTo: t } = this.options;
+  return this.data.today && this.isWeekOrDayView && e && !this.allDay && this.nowInMinutes <= t;
+}, todaysTimePosition() {
+  if (!this.data.today || !this.options.time)
+    return;
+  const e = this.nowInMinutes - this.options.timeFrom;
+  return Math.round(e * this.timeScale);
+}, timeScale() {
+  return this.options.timeCellHeight / this.options.timeStep;
+} } }, [["render", function(e, t, i, n, o, s) {
+  const a = j("event");
+  return h(), H(ue, { class: b(["vuecal__cell", s.cellClasses]), name: `slide-fade--${s.transitionDirection}`, tag: "div", appear: i.options.transitions, style: $(s.cellStyles) }, { default: g(() => [(h(!0), c(T, null, S(s.splitsCount ? s.splits : 1, (l, u) => (h(), c("div", { class: b(["vuecal__flex vuecal__cell-content", s.splitsCount && s.splitClasses(l)]), key: i.options.transitions ? `${s.view.id}-${i.data.content}-${u}` : u, "data-split": !!s.splitsCount && l.id, column: "", tabindex: "0", "aria-label": i.data.content, onFocus: t[0] || (t[0] = (r) => s.onCellFocus(r)), onKeypress: t[1] || (t[1] = Z((r) => s.onCellkeyPressEnter(r), ["enter"])), onTouchstart: (r) => !s.isDisabled && s.onCellTouchStart(r, s.splitsCount ? l.id : null), onMousedown: (r) => !s.isDisabled && s.onCellMouseDown(r, s.splitsCount ? l.id : null), onClick: t[2] || (t[2] = (r) => !s.isDisabled && s.onCellClick(r)), onDblclick: t[3] || (t[3] = (r) => !s.isDisabled && s.onCellDblClick(r)), onContextmenu: t[4] || (t[4] = (r) => !s.isDisabled && i.options.cellContextmenu && s.onCellContextMenu(r)), onDragenter: t[5] || (t[5] = (r) => !s.isDisabled && i.editEvents.drag && s.dnd && s.dnd.cellDragEnter(r, e.$data, i.data.startDate)), onDragover: (r) => !s.isDisabled && i.editEvents.drag && s.dnd && s.dnd.cellDragOver(r, e.$data, i.data.startDate, s.splitsCount ? l.id : null), onDragleave: t[6] || (t[6] = (r) => !s.isDisabled && i.editEvents.drag && s.dnd && s.dnd.cellDragLeave(r, e.$data, i.data.startDate)), onDrop: (r) => !s.isDisabled && i.editEvents.drag && s.dnd && s.dnd.cellDragDrop(r, e.$data, i.data.startDate, s.splitsCount ? l.id : null) }, [i.options.showTimeInCells && i.options.time && s.isWeekOrDayView && !i.allDay ? (h(), c("div", He, [(h(!0), c(T, null, S(s.vuecal.timeCells, (r, d) => (h(), c("span", { class: "cell-time-label", key: d }, f(r.label), 1))), 128))])) : m("", !0), s.isWeekOrDayView && !i.allDay && s.specialHours.length ? (h(!0), c(T, { key: 1 }, S(s.specialHours, (r, d) => (h(), c("div", { class: b(["vuecal__special-hours", `vuecal__special-hours--day${r.day} ${r.class}`]), style: $(`height: ${r.height}px;top: ${r.top}px`) }, [r.label ? (h(), c("div", { key: 0, class: "special-hours-label", innerHTML: r.label }, null, 8, Ve)) : m("", !0)], 6))), 256)) : m("", !0), w(e.$slots, "cell-content", { events: s.events, selectCell: (r) => s.selectCell(r, !0), split: !!s.splitsCount && l }), s.eventsCount && (s.isWeekOrDayView || s.view.id === "month" && i.options.eventsOnMonthView) ? (h(), c("div", Ae, [(h(!0), c(T, null, S(s.splitsCount ? l.events : s.events, (r, d) => (h(), H(a, { key: d, "cell-formatted-date": i.data.formattedDate, event: r, "all-day": i.allDay, "cell-events": s.splitsCount ? l.events : s.events, overlaps: ((s.splitsCount ? l.overlaps[r._eid] : e.cellOverlaps[r._eid]) || []).overlaps, "event-position": ((s.splitsCount ? l.overlaps[r._eid] : e.cellOverlaps[r._eid]) || []).position, "overlaps-streak": s.splitsCount ? l.overlapsStreak : e.cellOverlapsStreak }, { event: g(({ event: v, view: p }) => [w(e.$slots, "event", { view: p, event: v })]), _: 2 }, 1032, ["cell-formatted-date", "event", "all-day", "cell-events", "overlaps", "event-position", "overlaps-streak"]))), 128))])) : m("", !0)], 42, We))), 128)), s.timelineVisible ? (h(), c("div", { class: "vuecal__now-line", style: $(`top: ${s.todaysTimePosition}px`), key: i.options.transitions ? `${s.view.id}-now-line` : "now-line", title: s.utils.date.formatTime(s.vuecal.now) }, null, 12, je)) : m("", !0)]), _: 3 }, 8, ["class", "name", "appear", "style"]);
+}]]), Ye = { key: 0, class: "vuecal__all-day-text", style: { width: "3em" } }, Le = B({ inject: ["vuecal", "view", "editEvents"], components: { "vuecal-cell": ae }, props: { options: { type: Object, required: !0 }, cells: { type: Array, required: !0 }, label: { type: String, required: !0 }, daySplits: { type: Array, default: () => [] }, shortEvents: { type: Boolean, default: !0 }, height: { type: String, default: "" }, cellOrSplitMinWidth: { type: Number, default: null } }, computed: { hasCellOrSplitWidth() {
+  return !!(this.options.minCellWidth || this.daySplits.length && this.options.minSplitWidth);
+} } }, [["render", function(e, t, i, n, o, s) {
+  const a = j("vuecal-cell");
+  return h(), c("div", { class: "vuecal__flex vuecal__all-day", style: $(i.cellOrSplitMinWidth && { height: i.height }) }, [i.cellOrSplitMinWidth ? m("", !0) : (h(), c("div", Ye, [k("span", null, f(i.label), 1)])), k("div", { class: b(["vuecal__flex vuecal__cells", `${s.view.id}-view`]), grow: "", style: $(i.cellOrSplitMinWidth ? `min-width: ${i.cellOrSplitMinWidth}px` : "") }, [(h(!0), c(T, null, S(i.cells, (l, u) => (h(), H(a, { key: u, options: i.options, "edit-events": s.editEvents, data: l, "all-day": !0, "cell-width": i.options.hideWeekdays.length && (s.vuecal.isWeekView || s.vuecal.isMonthView) && s.vuecal.cellWidth, "min-timestamp": i.options.minTimestamp, "max-timestamp": i.options.maxTimestamp, "cell-splits": i.daySplits }, { event: g(({ event: r, view: d }) => [w(e.$slots, "event", { view: d, event: r })]), _: 2 }, 1032, ["options", "edit-events", "data", "cell-width", "min-timestamp", "max-timestamp", "cell-splits"]))), 128))], 6)], 4);
+}]]), Fe = ["lang"], Be = k("i", { class: "angle" }, null, -1), Ne = k("i", { class: "angle" }, null, -1), ze = { class: "default" }, Ie = { key: 0, class: "vuecal__flex vuecal__body", grow: "" }, Pe = ["onBlur", "innerHTML"], Ue = ["innerHTML"], Re = ["innerHTML"], qe = { class: "vuecal__flex", row: "", grow: "" }, Ke = { key: 0, class: "vuecal__time-column" }, Xe = k("span", { class: "vuecal__time-cell-line" }, null, -1), Ge = { class: "vuecal__time-cell-label" }, Ze = { key: 1, class: "vuecal__flex vuecal__week-numbers", column: "" }, Je = ["wrap", "column"], Qe = ["onBlur", "innerHTML"], et = ["innerHTML"], tt = ["innerHTML"], it = ["wrap"], st = ["innerHTML"], nt = ["innerHTML"], at = { key: 2, class: "vuecal__cell-events-count" }, lt = { key: 3, class: "vuecal__no-event" }, ot = ["onBlur", "innerHTML"], rt = ["innerHTML"], dt = { key: 2, class: "vuecal__event-time" }, ut = { key: 0 }, ht = { key: 1, class: "days-to-end" }, ct = ["innerHTML"], vt = { key: 0, class: "vuecal__scrollbar-check" }, mt = [k("div", null, null, -1)], I = 1440, P = { weekDays: Array(7).fill(""), weekDaysShort: [], months: Array(12).fill(""), years: "", year: "", month: "", week: "", day: "", today: "", noEvent: "", allDay: "", deleteEvent: "", createEvent: "", dateFormat: "dddd MMMM D, YYYY", am: "am", pm: "pm" }, ie = ["years", "year", "month", "week", "day"], se = new class {
+  constructor(e, t = !1) {
+    W(this, "texts", {});
+    W(this, "dateToMinutes", (e) => 60 * e.getHours() + e.getMinutes());
+    O = this, this._texts = e, t || !Date || Date.prototype.addDays || this._initDatePrototypes();
+  }
+  _initDatePrototypes() {
+    Date.prototype.addDays = function(e) {
+      return O.addDays(this, e);
+    }, Date.prototype.subtractDays = function(e) {
+      return O.subtractDays(this, e);
+    }, Date.prototype.addHours = function(e) {
+      return O.addHours(this, e);
+    }, Date.prototype.subtractHours = function(e) {
+      return O.subtractHours(this, e);
+    }, Date.prototype.addMinutes = function(e) {
+      return O.addMinutes(this, e);
+    }, Date.prototype.subtractMinutes = function(e) {
+      return O.subtractMinutes(this, e);
+    }, Date.prototype.getWeek = function() {
+      return O.getWeek(this);
+    }, Date.prototype.isToday = function() {
+      return O.isToday(this);
+    }, Date.prototype.isLeapYear = function() {
+      return O.isLeapYear(this);
+    }, Date.prototype.format = function(e = "YYYY-MM-DD") {
+      return O.formatDate(this, e);
+    }, Date.prototype.formatTime = function(e = "HH:mm") {
+      return O.formatTime(this, e);
+    };
+  }
+  removePrototypes() {
+    delete Date.prototype.addDays, delete Date.prototype.subtractDays, delete Date.prototype.addHours, delete Date.prototype.subtractHours, delete Date.prototype.addMinutes, delete Date.prototype.subtractMinutes, delete Date.prototype.getWeek, delete Date.prototype.isToday, delete Date.prototype.isLeapYear, delete Date.prototype.format, delete Date.prototype.formatTime;
+  }
+  updateTexts(e) {
+    this._texts = e;
+  }
+  _todayFormatted() {
+    return ee !== new Date().getDate() && (N = new Date(), ee = N.getDate(), te = `${N.getFullYear()}-${N.getMonth()}-${N.getDate()}`), te;
+  }
+  addDays(e, t) {
+    const i = new Date(e.valueOf());
+    return i.setDate(i.getDate() + t), i;
+  }
+  subtractDays(e, t) {
+    const i = new Date(e.valueOf());
+    return i.setDate(i.getDate() - t), i;
+  }
+  addHours(e, t) {
+    const i = new Date(e.valueOf());
+    return i.setHours(i.getHours() + t), i;
+  }
+  subtractHours(e, t) {
+    const i = new Date(e.valueOf());
+    return i.setHours(i.getHours() - t), i;
+  }
+  addMinutes(e, t) {
+    const i = new Date(e.valueOf());
+    return i.setMinutes(i.getMinutes() + t), i;
+  }
+  subtractMinutes(e, t) {
+    const i = new Date(e.valueOf());
+    return i.setMinutes(i.getMinutes() - t), i;
+  }
+  getWeek(e) {
+    const t = new Date(Date.UTC(e.getFullYear(), e.getMonth(), e.getDate())), i = t.getUTCDay() || 7;
+    t.setUTCDate(t.getUTCDate() + 4 - i);
+    const n = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+    return Math.ceil(((t - n) / 864e5 + 1) / 7);
+  }
+  isToday(e) {
+    return `${e.getFullYear()}-${e.getMonth()}-${e.getDate()}` === this._todayFormatted();
+  }
+  isLeapYear(e) {
+    const t = e.getFullYear();
+    return !(t % 400) || t % 100 && !(t % 4);
+  }
+  getPreviousFirstDayOfWeek(e = null, t) {
+    const i = e && new Date(e.valueOf()) || new Date(), n = t ? 7 : 6;
+    return i.setDate(i.getDate() - (i.getDay() + n) % 7), i;
+  }
+  stringToDate(e) {
+    return e instanceof Date ? e : (e.length === 10 && (e += " 00:00"), new Date(e.replace(/-/g, "/")));
+  }
+  countDays(e, t) {
+    typeof e == "string" && (e = e.replace(/-/g, "/")), typeof t == "string" && (t = t.replace(/-/g, "/")), e = new Date(e).setHours(0, 0, 0, 0), t = new Date(t).setHours(0, 0, 1, 0);
+    const i = 60 * (new Date(t).getTimezoneOffset() - new Date(e).getTimezoneOffset()) * 1e3;
+    return Math.ceil((t - e - i) / 864e5);
+  }
+  datesInSameTimeStep(e, t, i) {
+    return Math.abs(e.getTime() - t.getTime()) <= 60 * i * 1e3;
+  }
+  formatDate(e, t = "YYYY-MM-DD", i = null) {
+    if (i || (i = this._texts), t || (t = "YYYY-MM-DD"), t === "YYYY-MM-DD")
+      return this.formatDateLite(e);
+    z = {}, F = {};
+    const n = { YYYY: () => this._hydrateDateObject(e, i).YYYY, YY: () => this._hydrateDateObject(e, i).YY(), M: () => this._hydrateDateObject(e, i).M, MM: () => this._hydrateDateObject(e, i).MM(), MMM: () => this._hydrateDateObject(e, i).MMM(), MMMM: () => this._hydrateDateObject(e, i).MMMM(), MMMMG: () => this._hydrateDateObject(e, i).MMMMG(), D: () => this._hydrateDateObject(e, i).D, DD: () => this._hydrateDateObject(e, i).DD(), S: () => this._hydrateDateObject(e, i).S(), d: () => this._hydrateDateObject(e, i).d, dd: () => this._hydrateDateObject(e, i).dd(), ddd: () => this._hydrateDateObject(e, i).ddd(), dddd: () => this._hydrateDateObject(e, i).dddd(), HH: () => this._hydrateTimeObject(e, i).HH, H: () => this._hydrateTimeObject(e, i).H, hh: () => this._hydrateTimeObject(e, i).hh, h: () => this._hydrateTimeObject(e, i).h, am: () => this._hydrateTimeObject(e, i).am, AM: () => this._hydrateTimeObject(e, i).AM, mm: () => this._hydrateTimeObject(e, i).mm, m: () => this._hydrateTimeObject(e, i).m };
+    return t.replace(/(\{[a-zA-Z]+\}|[a-zA-Z]+)/g, (o, s) => {
+      const a = n[s.replace(/\{|\}/g, "")];
+      return a !== void 0 ? a() : s;
+    });
+  }
+  formatDateLite(e) {
+    const t = e.getMonth() + 1, i = e.getDate();
+    return `${e.getFullYear()}-${t < 10 ? "0" : ""}${t}-${i < 10 ? "0" : ""}${i}`;
+  }
+  formatTime(e, t = "HH:mm", i = null, n = !1) {
+    let o = !1;
+    if (n) {
+      const [l, u, r] = [e.getHours(), e.getMinutes(), e.getSeconds()];
+      l + u + r === 141 && (o = !0);
+    }
+    if (e instanceof Date && t === "HH:mm")
+      return o ? "24:00" : this.formatTimeLite(e);
+    F = {}, i || (i = this._texts);
+    const s = this._hydrateTimeObject(e, i), a = t.replace(/(\{[a-zA-Z]+\}|[a-zA-Z]+)/g, (l, u) => {
+      const r = s[u.replace(/\{|\}/g, "")];
+      return r !== void 0 ? r : u;
+    });
+    return o ? a.replace("23:59", "24:00") : a;
+  }
+  formatTimeLite(e) {
+    const t = e.getHours(), i = e.getMinutes();
+    return `${(t < 10 ? "0" : "") + t}:${(i < 10 ? "0" : "") + i}`;
+  }
+  _nth(e) {
+    if (e > 3 && e < 21)
+      return "th";
+    switch (e % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  }
+  _hydrateDateObject(e, t) {
+    if (z.D)
+      return z;
+    const i = e.getFullYear(), n = e.getMonth() + 1, o = e.getDate(), s = (e.getDay() - 1 + 7) % 7;
+    return z = { YYYY: i, YY: () => i.toString().substring(2), M: n, MM: () => (n < 10 ? "0" : "") + n, MMM: () => t.months[n - 1].substring(0, 3), MMMM: () => t.months[n - 1], MMMMG: () => (t.monthsGenitive || t.months)[n - 1], D: o, DD: () => (o < 10 ? "0" : "") + o, S: () => this._nth(o), d: s + 1, dd: () => t.weekDays[s][0], ddd: () => t.weekDays[s].substr(0, 3), dddd: () => t.weekDays[s] }, z;
+  }
+  _hydrateTimeObject(e, t) {
+    if (F.am)
+      return F;
+    let i, n;
+    e instanceof Date ? (i = e.getHours(), n = e.getMinutes()) : (i = Math.floor(e / 60), n = Math.floor(e % 60));
+    const o = i % 12 ? i % 12 : 12, s = (t || { am: "am", pm: "pm" })[i === 24 || i < 12 ? "am" : "pm"];
+    return F = { H: i, h: o, HH: (i < 10 ? "0" : "") + i, hh: (o < 10 ? "0" : "") + o, am: s, AM: s.toUpperCase(), m: n, mm: (n < 10 ? "0" : "") + n }, F;
+  }
+}(P), pt = { name: "vue-cal", components: { "vuecal-cell": ae, "vuecal-header": Oe, WeekdaysHeadings: ne, AllDayBar: Le }, provide() {
+  return { vuecal: this, utils: this.utils, modules: this.modules, previous: this.previous, next: this.next, switchView: this.switchView, updateSelectedDate: this.updateSelectedDate, editEvents: this.editEvents, view: this.view, domEvents: this.domEvents };
+}, props: { activeView: { type: String, default: "week" }, allDayBarHeight: { type: [String, Number], default: "25px" }, cellClickHold: { type: Boolean, default: !0 }, cellContextmenu: { type: Boolean, default: !1 }, clickToNavigate: { type: Boolean, default: !1 }, dblclickToNavigate: { type: Boolean, default: !0 }, disableDatePrototypes: { type: Boolean, default: !1 }, disableDays: { type: Array, default: () => [] }, disableViews: { type: Array, default: () => [] }, dragToCreateEvent: { type: Boolean, default: !0 }, dragToCreateThreshold: { type: Number, default: 15 }, editableEvents: { type: [Boolean, Object], default: !1 }, events: { type: Array, default: () => [] }, eventsCountOnYearView: { type: Boolean, default: !1 }, eventsOnMonthView: { type: [Boolean, String], default: !1 }, hideBody: { type: Boolean, default: !1 }, hideTitleBar: { type: Boolean, default: !1 }, hideViewSelector: { type: Boolean, default: !1 }, hideWeekdays: { type: Array, default: () => [] }, hideWeekends: { type: Boolean, default: !1 }, locale: { type: [String, Object], default: "en" }, maxDate: { type: [String, Date], default: "" }, minCellWidth: { type: Number, default: 0 }, minDate: { type: [String, Date], default: "" }, minEventWidth: { type: Number, default: 0 }, minSplitWidth: { type: Number, default: 0 }, onEventClick: { type: [Function, null], default: null }, onEventCreate: { type: [Function, null], default: null }, onEventDblclick: { type: [Function, null], default: null }, overlapsPerTimeStep: { type: Boolean, default: !1 }, resizeX: { type: Boolean, default: !1 }, selectedDate: { type: [String, Date], default: "" }, showAllDayEvents: { type: [Boolean, String], default: !1 }, showTimeInCells: { type: Boolean, default: !1 }, showWeekNumbers: { type: [Boolean, String], default: !1 }, snapToTime: { type: Number, default: 0 }, small: { type: Boolean, default: !1 }, specialHours: { type: Object, default: () => ({}) }, splitDays: { type: Array, default: () => [] }, startWeekOnSunday: { type: Boolean, default: !1 }, stickySplitLabels: { type: Boolean, default: !1 }, time: { type: Boolean, default: !0 }, timeCellHeight: { type: Number, default: 40 }, timeFormat: { type: String, default: "" }, timeFrom: { type: Number, default: 0 }, timeStep: { type: Number, default: 60 }, timeTo: { type: Number, default: I }, todayButton: { type: Boolean, default: !1 }, transitions: { type: Boolean, default: !0 }, twelveHour: { type: Boolean, default: !1 }, watchRealTime: { type: Boolean, default: !1 }, xsmall: { type: Boolean, default: !1 } }, data() {
+  return { ready: !1, texts: { ...P }, utils: { date: !!this.disableDatePrototypes && se.removePrototypes() || se, cell: null, event: null }, modules: { dnd: null }, cellsEl: null, view: { id: "", title: "", startDate: null, endDate: null, firstCellDate: null, lastCellDate: null, selectedDate: null, events: [] }, eventIdIncrement: 1, now: new Date(), timeTickerIds: [null, null], domEvents: { resizeAnEvent: { _eid: null, start: null, split: null, segment: null, originalEndTimeMinutes: 0, originalEnd: null, end: null, startCell: null, endCell: null }, dragAnEvent: { _eid: null }, dragCreateAnEvent: { startCursorY: null, start: null, split: null, event: null }, focusAnEvent: { _eid: null, mousedUp: !1 }, clickHoldAnEvent: { _eid: null, timeout: 1200, timeoutId: null }, dblTapACell: { taps: 0, timeout: 500 }, clickHoldACell: { cellId: null, split: null, timeout: 1200, timeoutId: null, eventCreated: !1 }, cancelClickEventCreation: !1 }, mutableEvents: [], transitionDirection: "right" };
+}, methods: { async loadLocale(e) {
+  if (typeof this.locale == "object")
+    return this.texts = Object.assign({}, P, e), void this.utils.date.updateTexts(this.texts);
+  if (this.locale === "en") {
+    const t = await import("./i18n/en.es.js");
+    this.texts = Object.assign({}, P, t);
+  } else
+    ((t, i) => {
+      const n = t[i];
+      return n ? typeof n == "function" ? n() : Promise.resolve(n) : new Promise((o, s) => {
+        (typeof queueMicrotask == "function" ? queueMicrotask : setTimeout)(s.bind(null, new Error("Unknown variable dynamic import: " + i)));
+      });
+    })(Object.assign({ "./i18n/ar.json": () => import("./i18n/ar.es.js"), "./i18n/bg.json": () => import("./i18n/bg.es.js"), "./i18n/bn.json": () => import("./i18n/bn.es.js"), "./i18n/bs.json": () => import("./i18n/bs.es.js"), "./i18n/ca.json": () => import("./i18n/ca.es.js"), "./i18n/cs.json": () => import("./i18n/cs.es.js"), "./i18n/da.json": () => import("./i18n/da.es.js"), "./i18n/de.json": () => import("./i18n/de.es.js"), "./i18n/el.json": () => import("./i18n/el.es.js"), "./i18n/en.json": () => import("./i18n/en.es.js"), "./i18n/es.json": () => import("./i18n/es.es.js"), "./i18n/et.json": () => import("./i18n/et.es.js"), "./i18n/fa.json": () => import("./i18n/fa.es.js"), "./i18n/fr.json": () => import("./i18n/fr.es.js"), "./i18n/he.json": () => import("./i18n/he.es.js"), "./i18n/hr.json": () => import("./i18n/hr.es.js"), "./i18n/hu.json": () => import("./i18n/hu.es.js"), "./i18n/id.json": () => import("./i18n/id.es.js"), "./i18n/is.json": () => import("./i18n/is.es.js"), "./i18n/it.json": () => import("./i18n/it.es.js"), "./i18n/ja.json": () => import("./i18n/ja.es.js"), "./i18n/ka.json": () => import("./i18n/ka.es.js"), "./i18n/ko.json": () => import("./i18n/ko.es.js"), "./i18n/lt.json": () => import("./i18n/lt.es.js"), "./i18n/mn.json": () => import("./i18n/mn.es.js"), "./i18n/nl.json": () => import("./i18n/nl.es.js"), "./i18n/no.json": () => import("./i18n/no.es.js"), "./i18n/pl.json": () => import("./i18n/pl.es.js"), "./i18n/pt-br.json": () => import("./i18n/pt-br.es.js"), "./i18n/ro.json": () => import("./i18n/ro.es.js"), "./i18n/ru.json": () => import("./i18n/ru.es.js"), "./i18n/sk.json": () => import("./i18n/sk.es.js"), "./i18n/sl.json": () => import("./i18n/sl.es.js"), "./i18n/sq.json": () => import("./i18n/sq.es.js"), "./i18n/sr.json": () => import("./i18n/sr.es.js"), "./i18n/sv.json": () => import("./i18n/sv.es.js"), "./i18n/tr.json": () => import("./i18n/tr.es.js"), "./i18n/uk.json": () => import("./i18n/uk.es.js"), "./i18n/vi.json": () => import("./i18n/vi.es.js"), "./i18n/zh-cn.json": () => import("./i18n/zh-cn.es.js"), "./i18n/zh-hk.json": () => import("./i18n/zh-hk.es.js") }), `./i18n/${e}.json`).then((t) => {
+      this.texts = Object.assign({}, P, t.default), this.utils.date.updateTexts(this.texts);
+    });
+}, loadDragAndDrop() {
+  import("./drag-and-drop.es.js").then((e) => {
+    const { DragAndDrop: t } = e;
+    this.modules.dnd = new t(this);
+  }).catch(() => console.warn("Vue Cal: Missing drag & drop module."));
+}, validateView(e) {
+  return ie.includes(e) || (console.error(`Vue Cal: invalid active-view parameter provided: "${e}".
+A valid view must be one of: ${ie.join(", ")}.`), e = "week"), this.enabledViews.includes(e) || (console.warn(`Vue Cal: the provided active-view "${e}" is disabled. Using the "${this.enabledViews[0]}" view instead.`), e = this.enabledViews[0]), e;
+}, switchToNarrowerView(e = null) {
+  this.transitionDirection = "right";
+  const t = this.enabledViews[this.enabledViews.indexOf(this.view.id) + 1];
+  t && this.switchView(t, e);
+}, switchView(e, t = null, i = !1) {
+  e = this.validateView(e);
+  const n = this.utils.date, o = this.view.startDate && this.view.startDate.getTime();
+  if (this.transitions && i) {
+    if (this.view.id === e)
+      return;
+    const l = this.enabledViews;
+    this.transitionDirection = l.indexOf(this.view.id) > l.indexOf(e) ? "left" : "right";
+  }
+  const s = this.view.id;
+  switch (this.view.events = [], this.view.id = e, this.view.firstCellDate = null, this.view.lastCellDate = null, t || (t = this.view.selectedDate || this.view.startDate), e) {
+    case "years":
+      this.view.startDate = new Date(25 * Math.floor(t.getFullYear() / 25) || 2e3, 0, 1), this.view.endDate = new Date(this.view.startDate.getFullYear() + 25, 0, 1), this.view.endDate.setSeconds(-1);
+      break;
+    case "year":
+      this.view.startDate = new Date(t.getFullYear(), 0, 1), this.view.endDate = new Date(t.getFullYear() + 1, 0, 1), this.view.endDate.setSeconds(-1);
+      break;
+    case "month": {
+      this.view.startDate = new Date(t.getFullYear(), t.getMonth(), 1), this.view.endDate = new Date(t.getFullYear(), t.getMonth() + 1, 1), this.view.endDate.setSeconds(-1);
+      let l = new Date(this.view.startDate);
+      if (l.getDay() !== (this.startWeekOnSunday ? 0 : 1) && (l = n.getPreviousFirstDayOfWeek(l, this.startWeekOnSunday)), this.view.firstCellDate = l, this.view.lastCellDate = n.addDays(l, 41), this.view.lastCellDate.setHours(23, 59, 59, 0), this.hideWeekends) {
+        if ([0, 6].includes(this.view.firstCellDate.getDay())) {
+          const u = this.view.firstCellDate.getDay() !== 6 || this.startWeekOnSunday ? 1 : 2;
+          this.view.firstCellDate = n.addDays(this.view.firstCellDate, u);
+        }
+        if ([0, 6].includes(this.view.startDate.getDay())) {
+          const u = this.view.startDate.getDay() === 6 ? 2 : 1;
+          this.view.startDate = n.addDays(this.view.startDate, u);
+        }
+        if ([0, 6].includes(this.view.lastCellDate.getDay())) {
+          const u = this.view.lastCellDate.getDay() !== 0 || this.startWeekOnSunday ? 1 : 2;
+          this.view.lastCellDate = n.subtractDays(this.view.lastCellDate, u);
+        }
+        if ([0, 6].includes(this.view.endDate.getDay())) {
+          const u = this.view.endDate.getDay() === 0 ? 2 : 1;
+          this.view.endDate = n.subtractDays(this.view.endDate, u);
+        }
+      }
+      break;
+    }
+    case "week": {
+      t = n.getPreviousFirstDayOfWeek(t, this.startWeekOnSunday);
+      const l = this.hideWeekends ? 5 : 7;
+      this.view.startDate = this.hideWeekends && this.startWeekOnSunday ? n.addDays(t, 1) : t, this.view.startDate.setHours(0, 0, 0, 0), this.view.endDate = n.addDays(t, l), this.view.endDate.setSeconds(-1);
+      break;
+    }
+    case "day":
+      this.view.startDate = t, this.view.startDate.setHours(0, 0, 0, 0), this.view.endDate = new Date(t), this.view.endDate.setHours(23, 59, 59, 0);
+  }
+  this.addEventsToView();
+  const a = this.view.startDate && this.view.startDate.getTime();
+  if ((s !== e || a !== o) && (this.$emit("update:activeView", e), this.ready)) {
+    const l = this.view.startDate, u = { view: e, startDate: l, endDate: this.view.endDate, ...this.isMonthView ? { firstCellDate: this.view.firstCellDate, lastCellDate: this.view.lastCellDate, outOfScopeEvents: this.view.outOfScopeEvents.map(this.cleanupEvent) } : {}, events: this.view.events.map(this.cleanupEvent), ...this.isWeekView ? { week: n.getWeek(this.startWeekOnSunday ? n.addDays(l, 1) : l) } : {} };
+    this.$emit("view-change", u);
+  }
+}, previous() {
+  this.previousNext(!1);
+}, next() {
+  this.previousNext();
+}, previousNext(e = !0) {
+  const t = this.utils.date;
+  this.transitionDirection = e ? "right" : "left";
+  const i = e ? 1 : -1;
+  let n = null;
+  const { startDate: o, id: s } = this.view;
+  switch (s) {
+    case "years":
+      n = new Date(o.getFullYear() + 25 * i, 0, 1);
+      break;
+    case "year":
+      n = new Date(o.getFullYear() + 1 * i, 1, 1);
+      break;
+    case "month":
+      n = new Date(o.getFullYear(), o.getMonth() + 1 * i, 1);
+      break;
+    case "week":
+      n = t[e ? "addDays" : "subtractDays"](t.getPreviousFirstDayOfWeek(o, this.startWeekOnSunday), 7);
+      break;
+    case "day":
+      n = t[e ? "addDays" : "subtractDays"](o, 1);
+      const a = n.getDay(), l = this.startWeekOnSunday ? a : (a || 7) - 1;
+      if (this.weekDays[l].hide) {
+        const u = this.weekDays.map((d, v) => ({ ...d, i: v }));
+        let r = 0;
+        e ? ([...u.slice(l), ...u].find((d) => (r++, !d.hide)).i, r--) : [...u, ...u.slice(0, l)].reverse().find((d) => (r++, !d.hide)).i, n = t[e ? "addDays" : "subtractDays"](n, r);
+      }
+  }
+  n && this.switchView(s, n);
+}, addEventsToView(e = []) {
+  const t = this.utils.event, { startDate: i, endDate: n, firstCellDate: o, lastCellDate: s } = this.view;
+  if (e.length || (this.view.events = []), !(e = e.length ? e : [...this.mutableEvents]) || this.isYearsOrYearView && !this.eventsCountOnYearView)
+    return;
+  let a = e.filter((l) => t.eventInRange(l, i, n));
+  this.isYearsOrYearView || this.isMonthView && !this.eventsOnMonthView || (a = a.map((l) => l.daysCount > 1 ? t.createEventSegments(l, o || i, s || n) : l)), this.view.events.push(...a), this.isMonthView && (this.view.outOfScopeEvents = [], e.forEach((l) => {
+    (t.eventInRange(l, o, i) || t.eventInRange(l, n, s)) && (this.view.events.some((u) => u._eid === l._eid) || this.view.outOfScopeEvents.push(l));
+  }));
+}, findAncestor(e, t) {
+  for (; (e = e.parentElement) && !e.classList.contains(t); )
+    ;
+  return e;
+}, isDOMElementAnEvent(e) {
+  return e.classList.contains("vuecal__event") || this.findAncestor(e, "vuecal__event");
+}, onMouseMove(e) {
+  const { resizeAnEvent: t, dragAnEvent: i, dragCreateAnEvent: n } = this.domEvents;
+  (t._eid !== null || i._eid !== null || n.start) && (e.preventDefault(), t._eid ? this.eventResizing(e) : this.dragToCreateEvent && n.start && this.eventDragCreation(e));
+}, onMouseUp(e) {
+  const { focusAnEvent: t, resizeAnEvent: i, clickHoldAnEvent: n, clickHoldACell: o, dragCreateAnEvent: s } = this.domEvents, { _eid: a } = n, { _eid: l } = i;
+  let u = !1;
+  const { event: r, start: d } = s, v = this.isDOMElementAnEvent(e.target), p = t.mousedUp;
+  if (t.mousedUp = !1, v && (this.domEvents.cancelClickEventCreation = !0), o.eventCreated)
+    return;
+  if (l) {
+    const { originalEnd: _, originalEndTimeMinutes: x, endTimeMinutes: V } = i, C = this.view.events.find((Y) => Y._eid === i._eid);
+    if (u = V && V !== x, C && C.end.getTime() !== _.getTime()) {
+      const Y = this.mutableEvents.find((le) => le._eid === i._eid);
+      Y.endTimeMinutes = C.endTimeMinutes, Y.end = C.end;
+      const A = this.cleanupEvent(C), G = { ...this.cleanupEvent(C), end: _, endTimeMinutes: C.originalEndTimeMinutes };
+      this.$emit("event-duration-change", { event: A, oldDate: i.originalEnd, originalEvent: G }), this.$emit("event-change", { event: A, originalEvent: G });
+    }
+    C && (C.resizing = !1), i._eid = null, i.start = null, i.split = null, i.segment = null, i.originalEndTimeMinutes = null, i.originalEnd = null, i.endTimeMinutes = null, i.startCell = null, i.endCell = null;
+  } else
+    d && (r && (this.emitWithEvent("event-drag-create", r), s.event.resizing = !1), s.start = null, s.split = null, s.event = null);
+  v || l || this.unfocusEvent(), n.timeoutId && !a && (clearTimeout(n.timeoutId), n.timeoutId = null), o.timeoutId && (clearTimeout(o.timeoutId), o.timeoutId = null);
+  const E = typeof this.onEventClick == "function";
+  if (p && !u && !a && !r && E) {
+    let _ = this.view.events.find((x) => x._eid === t._eid);
+    return !_ && this.isMonthView && (_ = this.view.outOfScopeEvents.find((x) => x._eid === t._eid)), _ && this.onEventClick(_, e);
+  }
+}, onKeyUp(e) {
+  e.keyCode === 27 && this.cancelDelete();
+}, eventResizing(e) {
+  const { resizeAnEvent: t } = this.domEvents, i = this.view.events.find((r) => r._eid === t._eid) || { segments: {} }, { minutes: n, cursorCoords: o } = this.minutesAtCursor(e), s = i.segments && i.segments[t.segment], { date: a, event: l } = this.utils, u = Math.max(n, this.timeFrom + 1, (s || i).startTimeMinutes + 1);
+  if (i.endTimeMinutes = t.endTimeMinutes = u, this.snapToTime) {
+    const r = i.endTimeMinutes + this.snapToTime / 2;
+    i.endTimeMinutes = r - r % this.snapToTime;
+  }
+  if (s && (s.endTimeMinutes = i.endTimeMinutes), i.end.setHours(0, i.endTimeMinutes, i.endTimeMinutes === I ? -1 : 0, 0), this.resizeX && this.isWeekView) {
+    i.daysCount = a.countDays(i.start, i.end);
+    const r = this.cellsEl, d = r.offsetWidth / r.childElementCount, v = Math.floor(o.x / d);
+    if (t.startCell === null && (t.startCell = v - (i.daysCount - 1)), t.endCell !== v) {
+      t.endCell = v;
+      const p = a.addDays(i.start, v - t.startCell), E = Math.max(a.countDays(i.start, p), 1);
+      if (E !== i.daysCount) {
+        let _ = null;
+        _ = E > i.daysCount ? l.addEventSegment(i) : l.removeEventSegment(i), t.segment = _, i.endTimeMinutes += 1e-3;
+      }
+    }
+  }
+  this.$emit("event-resizing", { _eid: i._eid, end: i.end, endTimeMinutes: i.endTimeMinutes });
+}, eventDragCreation(e) {
+  const { dragCreateAnEvent: t } = this.domEvents, { start: i, startCursorY: n, split: o } = t, s = new Date(i), { minutes: a, cursorCoords: { y: l } } = this.minutesAtCursor(e);
+  if (t.event || !(Math.abs(n - l) < this.dragToCreateThreshold))
+    if (t.event) {
+      if (s.setHours(0, a, a === I ? -1 : 0, 0), this.snapToTime) {
+        let d = 60 * s.getHours() + s.getMinutes();
+        const v = d + this.snapToTime / 2;
+        d = v - v % this.snapToTime, s.setHours(0, d, 0, 0);
+      }
+      const u = i < s, { event: r } = t;
+      r.start = u ? i : s, r.end = u ? s : i, r.startTimeMinutes = 60 * r.start.getHours() + r.start.getMinutes(), r.endTimeMinutes = 60 * r.end.getHours() + r.end.getMinutes();
+    } else {
+      if (t.event = this.utils.event.createAnEvent(i, 1, { split: o }), !t.event)
+        return t.start = null, t.split = null, void (t.event = null);
+      t.event.resizing = !0;
+    }
+}, unfocusEvent() {
+  const { focusAnEvent: e, clickHoldAnEvent: t } = this.domEvents, i = this.view.events.find((n) => n._eid === (e._eid || t._eid));
+  e._eid = null, t._eid = null, i && (i.focused = !1, i.deleting = !1);
+}, cancelDelete() {
+  const { clickHoldAnEvent: e } = this.domEvents;
+  if (e._eid) {
+    const t = this.view.events.find((i) => i._eid === e._eid);
+    t && (t.deleting = !1), e._eid = null, e.timeoutId = null;
+  }
+}, onEventTitleBlur(e, t) {
+  if (t.title === e.target.innerHTML)
+    return;
+  const i = t.title;
+  t.title = e.target.innerHTML;
+  const n = this.cleanupEvent(t);
+  this.$emit("event-title-change", { event: n, oldTitle: i }), this.$emit("event-change", { event: n, originalEvent: { ...n, title: i } });
+}, updateMutableEvents() {
+  const e = this.utils.date;
+  this.mutableEvents = [], this.events.forEach((t) => {
+    const i = typeof t.start == "string" ? e.stringToDate(t.start) : t.start, n = e.formatDateLite(i), o = e.dateToMinutes(i);
+    let s = null;
+    typeof t.end == "string" && t.end.includes("24:00") ? (s = new Date(t.end.replace(" 24:00", "")), s.setHours(23, 59, 59, 0)) : s = typeof t.end == "string" ? e.stringToDate(t.end) : t.end;
+    let a = e.formatDateLite(s), l = e.dateToMinutes(s);
+    l && l !== I || (!this.time || typeof t.end == "string" && t.end.length === 10 ? s.setHours(23, 59, 59, 0) : s.setSeconds(s.getSeconds() - 1), a = e.formatDateLite(s), l = I);
+    const u = n !== a;
+    t = Object.assign({ ...this.utils.event.eventDefaults }, t, { _eid: `${this._.uid}_${this.eventIdIncrement++}`, segments: u ? {} : null, start: i, startTimeMinutes: o, end: s, endTimeMinutes: l, daysCount: u ? e.countDays(i, s) : 1, class: t.class }), this.mutableEvents.push(t);
+  });
+}, minutesAtCursor(e) {
+  return this.utils.cell.minutesAtCursor(e);
+}, createEvent(e, t, i = {}) {
+  return this.utils.event.createAnEvent(e, t, i);
+}, cleanupEvent(e) {
+  return e = { ...e }, ["segments", "deletable", "deleting", "titleEditable", "resizable", "resizing", "draggable", "dragging", "draggingStatic", "focused"].forEach((t) => {
+    t in e && delete e[t];
+  }), e.repeat || delete e.repeat, e;
+}, emitWithEvent(e, t) {
+  this.$emit(e, this.cleanupEvent(t));
+}, updateSelectedDate(e) {
+  if ((e = e && typeof e == "string" ? this.utils.date.stringToDate(e) : new Date(e)) && e instanceof Date) {
+    const { selectedDate: t } = this.view;
+    t && (this.transitionDirection = t.getTime() > e.getTime() ? "left" : "right"), e.setHours(0, 0, 0, 0), t && t.getTime() === e.getTime() || (this.view.selectedDate = e), this.switchView(this.view.id);
+  }
+  this.$emit("update:selected-date", this.view.selectedDate);
+}, getWeekNumber(e) {
+  const t = this.utils.date, i = this.firstCellDateWeekNumber + e, n = this.startWeekOnSunday ? 1 : 0;
+  return i > 52 ? t.getWeek(t.addDays(this.view.firstCellDate, 7 * e + n)) : i;
+}, timeTick() {
+  this.now = new Date(), this.timeTickerIds[1] = setTimeout(this.timeTick, 6e4);
+}, updateDateTexts() {
+  this.utils.date.updateTexts(this.texts);
+}, alignWithScrollbar() {
+  if (document.getElementById("vuecal-align-with-scrollbar"))
+    return;
+  const e = this.$refs.vuecal.getElementsByClassName("vuecal__scrollbar-check")[0], t = e.offsetWidth - e.children[0].offsetWidth;
+  if (t) {
+    const i = document.createElement("style");
+    i.id = "vuecal-align-with-scrollbar", i.type = "text/css", i.innerHTML = `.vuecal--view-with-time .vuecal__weekdays-headings,.vuecal--view-with-time .vuecal__all-day {padding-right: ${t}px}`, document.head.appendChild(i);
+  }
+}, cellOrSplitHasEvents: (e, t = null) => e.length && (!t && e.length || t && e.some((i) => i.split === t.id)) }, created() {
+  this.utils.cell = new he(this), this.utils.event = new ce(this, this.utils.date), this.loadLocale(this.locale), this.editEvents.drag && this.loadDragAndDrop(), this.updateMutableEvents(this.events), this.view.id = this.currentView, this.selectedDate ? this.updateSelectedDate(this.selectedDate) : (this.view.selectedDate = new Date(), this.switchView(this.currentView)), this.time && this.watchRealTime && (this.timeTickerIds[0] = setTimeout(this.timeTick, 1e3 * (60 - this.now.getSeconds())));
+}, mounted() {
+  const e = this.utils.date, t = "ontouchstart" in window, { resize: i, drag: n, create: o, delete: s, title: a } = this.editEvents, l = this.onEventClick && typeof this.onEventClick == "function";
+  (i || n || o || s || a || l) && window.addEventListener(t ? "touchend" : "mouseup", this.onMouseUp), (i || n || o && this.dragToCreateEvent) && window.addEventListener(t ? "touchmove" : "mousemove", this.onMouseMove, { passive: !1 }), a && window.addEventListener("keyup", this.onKeyUp), t && (this.$refs.vuecal.oncontextmenu = function(d) {
+    d.preventDefault(), d.stopPropagation();
+  }), this.hideBody || this.alignWithScrollbar();
+  const u = this.view.startDate, r = { view: this.view.id, startDate: u, endDate: this.view.endDate, ...this.isMonthView ? { firstCellDate: this.view.firstCellDate, lastCellDate: this.view.lastCellDate } : {}, events: this.view.events.map(this.cleanupEvent), ...this.isWeekView ? { week: e.getWeek(this.startWeekOnSunday ? e.addDays(u, 1) : u) } : {} };
+  this.$emit("ready", r), this.ready = !0;
+}, beforeUnmount() {
+  const e = "ontouchstart" in window;
+  window.removeEventListener(e ? "touchmove" : "mousemove", this.onMouseMove, { passive: !1 }), window.removeEventListener(e ? "touchend" : "mouseup", this.onMouseUp), window.removeEventListener("keyup", this.onKeyUp), this.timeTickerIds[0] && clearTimeout(this.timeTickerIds[0]), this.timeTickerIds[1] && clearTimeout(this.timeTickerIds[1]), this.timeTickerIds = [null, null];
+}, computed: { editEvents() {
+  return this.editableEvents && typeof this.editableEvents == "object" ? { title: !!this.editableEvents.title, drag: !!this.editableEvents.drag, resize: !!this.editableEvents.resize, create: !!this.editableEvents.create, delete: !!this.editableEvents.delete } : { title: !!this.editableEvents, drag: !!this.editableEvents, resize: !!this.editableEvents, create: !!this.editableEvents, delete: !!this.editableEvents };
+}, views() {
+  return { years: { label: this.texts.years, enabled: !this.disableViews.includes("years") }, year: { label: this.texts.year, enabled: !this.disableViews.includes("year") }, month: { label: this.texts.month, enabled: !this.disableViews.includes("month") }, week: { label: this.texts.week, enabled: !this.disableViews.includes("week") }, day: { label: this.texts.day, enabled: !this.disableViews.includes("day") } };
+}, currentView() {
+  return this.validateView(this.activeView);
+}, enabledViews() {
+  return Object.keys(this.views).filter((e) => this.views[e].enabled);
+}, hasTimeColumn() {
+  return this.time && this.isWeekOrDayView;
+}, isShortMonthView() {
+  return this.isMonthView && this.eventsOnMonthView === "short";
+}, firstCellDateWeekNumber() {
+  const e = this.utils.date, t = this.view.firstCellDate;
+  return e.getWeek(this.startWeekOnSunday ? e.addDays(t, 1) : t);
+}, timeCells() {
+  const e = [];
+  for (let t = this.timeFrom, i = this.timeTo; t < i; t += this.timeStep)
+    e.push({ hours: Math.floor(t / 60), minutes: t % 60, label: this.utils.date.formatTime(t, this.TimeFormat), value: t });
+  return e;
+}, TimeFormat() {
+  return this.timeFormat || (this.twelveHour ? "h:mm{am}" : "HH:mm");
+}, daySplits() {
+  return (this.splitDays.filter((e) => !e.hide) || []).map((e, t) => ({ ...e, id: e.id || t + 1 }));
+}, hasSplits() {
+  return this.daySplits.length && this.isWeekOrDayView;
+}, hasShortEvents() {
+  return this.showAllDayEvents === "short";
+}, cellOrSplitMinWidth() {
+  let e = null;
+  return this.hasSplits && this.minSplitWidth ? e = this.visibleDaysCount * this.minSplitWidth * this.daySplits.length : this.minCellWidth && this.isWeekView && (e = this.visibleDaysCount * this.minCellWidth), e;
+}, allDayBar() {
+  let e = this.allDayBarHeight || null;
+  return e && !isNaN(e) && (e += "px"), { cells: this.viewCells, options: this.$props, label: this.texts.allDay, shortEvents: this.hasShortEvents, daySplits: this.hasSplits && this.daySplits || [], cellOrSplitMinWidth: this.cellOrSplitMinWidth, height: e };
+}, minTimestamp() {
+  let e = null;
+  return this.minDate && typeof this.minDate == "string" ? e = this.utils.date.stringToDate(this.minDate) : this.minDate && this.minDate instanceof Date && (e = this.minDate), e ? e.getTime() : null;
+}, maxTimestamp() {
+  let e = null;
+  return this.maxDate && typeof this.maxDate == "string" ? e = this.utils.date.stringToDate(this.maxDate) : this.maxDate && this.minDate instanceof Date && (e = this.maxDate), e ? e.getTime() : null;
+}, weekDays() {
+  let { weekDays: e, weekDaysShort: t = [] } = this.texts;
+  return e = e.slice(0).map((i, n) => ({ label: i, ...t.length ? { short: t[n] } : {}, hide: this.hideWeekends && n >= 5 || this.hideWeekdays.length && this.hideWeekdays.includes(n + 1) })), this.startWeekOnSunday && e.unshift(e.pop()), e;
+}, weekDaysInHeader() {
+  return this.isMonthView || this.isWeekView && !this.minCellWidth && !(this.hasSplits && this.minSplitWidth);
+}, months() {
+  return this.texts.months.map((e) => ({ label: e }));
+}, specialDayHours() {
+  return this.specialHours && Object.keys(this.specialHours).length ? Array(7).fill("").map((e, t) => {
+    let i = this.specialHours[t + 1] || [];
+    return Array.isArray(i) || (i = [i]), e = [], i.forEach(({ from: n, to: o, class: s, label: a }, l) => {
+      e[l] = { day: t + 1, from: [null, void 0].includes(n) ? null : 1 * n, to: [null, void 0].includes(o) ? null : 1 * o, class: s || "", label: a || "" };
+    }), e;
+  }) : {};
+}, viewTitle() {
+  const e = this.utils.date;
+  let t = "";
+  const i = this.view.startDate, n = i.getFullYear(), o = i.getMonth();
+  switch (this.view.id) {
+    case "years":
+      t = this.texts.years;
+      break;
+    case "year":
+      t = n;
+      break;
+    case "month":
+      t = `${this.months[o].label} ${n}`;
+      break;
+    case "week": {
+      const s = this.view.endDate, a = i.getFullYear();
+      let l = this.texts.months[i.getMonth()];
+      this.xsmall && (l = l.substring(0, 3));
+      let u = `${l} ${a}`;
+      if (s.getMonth() !== i.getMonth()) {
+        const r = s.getFullYear();
+        let d = this.texts.months[s.getMonth()];
+        this.xsmall && (d = d.substring(0, 3)), u = a === r ? `${l} - ${d} ${a}` : this.small ? `${l.substring(0, 3)} ${a} - ${d.substring(0, 3)} ${r}` : `${l} ${a} - ${d} ${r}`;
+      }
+      t = `${this.texts.week} ${e.getWeek(this.startWeekOnSunday ? e.addDays(i, 1) : i)} (${u})`;
+      break;
+    }
+    case "day":
+      t = this.utils.date.formatDate(i, this.texts.dateFormat, this.texts);
+  }
+  return t;
+}, viewCells() {
+  const e = this.utils.date;
+  let t = [], i = null, n = !1;
+  this.watchRealTime || (this.now = new Date());
+  const o = this.now;
+  switch (this.view.id) {
+    case "years":
+      i = this.view.startDate.getFullYear(), t = Array.apply(null, Array(25)).map((s, a) => {
+        const l = new Date(i + a, 0, 1), u = new Date(i + a + 1, 0, 1);
+        return u.setSeconds(-1), { startDate: l, formattedDate: e.formatDateLite(l), endDate: u, content: i + a, current: i + a === o.getFullYear() };
+      });
+      break;
+    case "year":
+      i = this.view.startDate.getFullYear(), t = Array.apply(null, Array(12)).map((s, a) => {
+        const l = new Date(i, a, 1), u = new Date(i, a + 1, 1);
+        return u.setSeconds(-1), { startDate: l, formattedDate: e.formatDateLite(l), endDate: u, content: this.xsmall ? this.months[a].label.substr(0, 3) : this.months[a].label, current: a === o.getMonth() && i === o.getFullYear() };
+      });
+      break;
+    case "month": {
+      const s = this.view.startDate.getMonth(), a = new Date(this.view.firstCellDate);
+      n = !1, t = Array.apply(null, Array(42)).map((l, u) => {
+        const r = e.addDays(a, u), d = new Date(r);
+        d.setHours(23, 59, 59, 0);
+        const v = !n && e.isToday(r) && !n++;
+        return { startDate: r, formattedDate: e.formatDateLite(r), endDate: d, content: r.getDate(), today: v, outOfScope: r.getMonth() !== s, class: `vuecal__cell--day${r.getDay() || 7}` };
+      }), (this.hideWeekends || this.hideWeekdays.length) && (t = t.filter((l) => {
+        const u = l.startDate.getDay() || 7;
+        return !(this.hideWeekends && u >= 6 || this.hideWeekdays.length && this.hideWeekdays.includes(u));
+      }));
+      break;
+    }
+    case "week": {
+      n = !1;
+      const s = this.view.startDate, a = this.weekDays;
+      t = a.map((l, u) => {
+        const r = e.addDays(s, this.startWeekOnSunday ? u - 1 : u), d = new Date(r);
+        d.setHours(23, 59, 59, 0);
+        const v = (r.getDay() || 7) - 1;
+        return { startDate: r, formattedDate: e.formatDateLite(r), endDate: d, today: !n && e.isToday(r) && !n++, specialHours: this.specialDayHours[v] || [] };
+      }).filter((l, u) => !a[u].hide);
+      break;
+    }
+    case "day": {
+      const s = this.view.startDate, a = new Date(this.view.startDate);
+      a.setHours(23, 59, 59, 0);
+      const l = (s.getDay() || 7) - 1;
+      t = [{ startDate: s, formattedDate: e.formatDateLite(s), endDate: a, today: e.isToday(s), specialHours: this.specialDayHours[l] || [] }];
+      break;
+    }
+  }
+  return t;
+}, visibleDaysCount() {
+  return this.isDayView ? 1 : 7 - this.weekDays.reduce((e, t) => e + t.hide, 0);
+}, cellWidth() {
+  return 100 / this.visibleDaysCount;
+}, cssClasses() {
+  const { resizeAnEvent: e, dragAnEvent: t, dragCreateAnEvent: i } = this.domEvents;
+  return { [`vuecal--${this.view.id}-view`]: !0, [`vuecal--${this.locale}`]: this.locale, "vuecal--no-time": !this.time, "vuecal--view-with-time": this.hasTimeColumn, "vuecal--week-numbers": this.showWeekNumbers && this.isMonthView, "vuecal--twelve-hour": this.twelveHour, "vuecal--click-to-navigate": this.clickToNavigate, "vuecal--hide-weekends": this.hideWeekends, "vuecal--split-days": this.hasSplits, "vuecal--sticky-split-labels": this.hasSplits && this.stickySplitLabels, "vuecal--overflow-x": this.minCellWidth && this.isWeekView || this.hasSplits && this.minSplitWidth, "vuecal--small": this.small, "vuecal--xsmall": this.xsmall, "vuecal--resizing-event": e._eid, "vuecal--drag-creating-event": i.event, "vuecal--dragging-event": t._eid, "vuecal--events-on-month-view": this.eventsOnMonthView, "vuecal--short-events": this.isMonthView && this.eventsOnMonthView === "short", "vuecal--has-touch": typeof window < "u" && "ontouchstart" in window };
+}, isYearsOrYearView() {
+  return ["years", "year"].includes(this.view.id);
+}, isYearsView() {
+  return this.view.id === "years";
+}, isYearView() {
+  return this.view.id === "year";
+}, isMonthView() {
+  return this.view.id === "month";
+}, isWeekOrDayView() {
+  return ["week", "day"].includes(this.view.id);
+}, isWeekView() {
+  return this.view.id === "week";
+}, isDayView() {
+  return this.view.id === "day";
+} }, watch: { events: { handler(e, t) {
+  this.updateMutableEvents(e), this.addEventsToView();
+}, deep: !0 }, locale(e) {
+  this.loadLocale(e);
+}, selectedDate(e) {
+  this.updateSelectedDate(e);
+}, activeView(e) {
+  this.switchView(e);
+} } }, Dt = B(pt, [["render", function(e, t, i, n, o, s) {
+  const a = j("vuecal-header"), l = j("all-day-bar"), u = j("weekdays-headings"), r = j("vuecal-cell");
+  return h(), c("div", { class: b(["vuecal__flex vuecal", s.cssClasses]), column: "", ref: "vuecal", lang: i.locale }, [U(a, { options: e.$props, "edit-events": s.editEvents, "view-props": { views: s.views, weekDaysInHeader: s.weekDaysInHeader }, "week-days": s.weekDays, "has-splits": s.hasSplits, "day-splits": s.daySplits, "switch-to-narrower-view": s.switchToNarrowerView }, X({ "arrow-prev": g(() => [w(e.$slots, "arrow-prev", {}, () => [M("\xA0"), Be, M("\xA0")])]), "arrow-next": g(() => [w(e.$slots, "arrow-next", {}, () => [M("\xA0"), Ne, M("\xA0")])]), "today-button": g(() => [w(e.$slots, "today-button", {}, () => [k("span", ze, f(o.texts.today), 1)])]), title: g(() => [w(e.$slots, "title", { title: s.viewTitle, view: o.view }, () => [M(f(s.viewTitle), 1)])]), _: 2 }, [e.$slots["weekday-heading"] ? { name: "weekday-heading", fn: g(({ heading: d, view: v }) => [w(e.$slots, "weekday-heading", { heading: d, view: v })]), key: "0" } : void 0, e.$slots["split-label"] ? { name: "split-label", fn: g(({ split: d }) => [w(e.$slots, "split-label", { split: d, view: o.view.id })]), key: "1" } : void 0]), 1032, ["options", "edit-events", "view-props", "week-days", "has-splits", "day-splits", "switch-to-narrower-view"]), i.hideBody ? m("", !0) : (h(), c("div", Ie, [U(R, { name: `slide-fade--${o.transitionDirection}`, appear: i.transitions }, { default: g(() => [(h(), c("div", { class: "vuecal__flex", style: { "min-width": "100%" }, key: !!i.transitions && o.view.id, column: "" }, [i.showAllDayEvents && s.hasTimeColumn && (!s.cellOrSplitMinWidth || s.isDayView && !i.minSplitWidth) ? (h(), H(l, J(Q({ key: 0 }, s.allDayBar)), { event: g(({ event: d, view: v }) => [w(e.$slots, "event", { view: v, event: d }, () => [s.editEvents.title && d.titleEditable ? (h(), c("div", { key: 0, class: "vuecal__event-title vuecal__event-title--edit", contenteditable: "", onBlur: (p) => s.onEventTitleBlur(p, d), innerHTML: d.title }, null, 40, Pe)) : d.title ? (h(), c("div", { key: 1, class: "vuecal__event-title", innerHTML: d.title }, null, 8, Ue)) : m("", !0), !d.content || s.hasShortEvents || s.isShortMonthView ? m("", !0) : (h(), c("div", { key: 2, class: "vuecal__event-content", innerHTML: d.content }, null, 8, Re))])]), _: 3 }, 16)) : m("", !0), k("div", { class: b(["vuecal__bg", { vuecal__flex: !s.hasTimeColumn }]), column: "" }, [k("div", qe, [s.hasTimeColumn ? (h(), c("div", Ke, [i.showAllDayEvents && s.cellOrSplitMinWidth && (!s.isDayView || i.minSplitWidth) ? (h(), c("div", { key: 0, class: "vuecal__all-day-text", style: $({ height: s.allDayBar.height }) }, [k("span", null, f(o.texts.allDay), 1)], 4)) : m("", !0), (h(!0), c(T, null, S(s.timeCells, (d, v) => (h(), c("div", { class: "vuecal__time-cell", key: v, style: $(`height: ${i.timeCellHeight}px`) }, [w(e.$slots, "time-cell", { hours: d.hours, minutes: d.minutes }, () => [Xe, k("span", Ge, f(d.label), 1)])], 4))), 128))])) : m("", !0), i.showWeekNumbers && s.isMonthView ? (h(), c("div", Ze, [(h(), c(T, null, S(6, (d) => k("div", { class: "vuecal__flex vuecal__week-number-cell", key: d, grow: "" }, [w(e.$slots, "week-number-cell", { week: s.getWeekNumber(d - 1) }, () => [M(f(s.getWeekNumber(d - 1)), 1)])])), 64))])) : m("", !0), k("div", { class: b(["vuecal__flex vuecal__cells", `${o.view.id}-view`]), grow: "", wrap: !s.cellOrSplitMinWidth || !s.isWeekView, column: !!s.cellOrSplitMinWidth }, [s.cellOrSplitMinWidth && s.isWeekView ? (h(), H(u, { key: 0, "transition-direction": o.transitionDirection, "week-days": s.weekDays, "switch-to-narrower-view": s.switchToNarrowerView, style: $(s.cellOrSplitMinWidth ? `min-width: ${s.cellOrSplitMinWidth}px` : "") }, X({ _: 2 }, [e.$slots["weekday-heading"] ? { name: "weekday-heading", fn: g(({ heading: d, view: v }) => [w(e.$slots, "weekday-heading", { heading: d, view: v })]), key: "0" } : void 0, e.$slots["split-label"] ? { name: "split-label", fn: g(({ split: d }) => [w(e.$slots, "split-label", { split: d, view: o.view.id })]), key: "1" } : void 0]), 1032, ["transition-direction", "week-days", "switch-to-narrower-view", "style"])) : s.hasSplits && i.stickySplitLabels && i.minSplitWidth ? (h(), c("div", { key: 1, class: "vuecal__flex vuecal__split-days-headers", style: $(s.cellOrSplitMinWidth ? `min-width: ${s.cellOrSplitMinWidth}px` : "") }, [(h(!0), c(T, null, S(s.daySplits, (d, v) => (h(), c("div", { class: b(["day-split-header", d.class || !1]), key: v }, [w(e.$slots, "split-label", { split: d, view: o.view.id }, () => [M(f(d.label), 1)])], 2))), 128))], 4)) : m("", !0), i.showAllDayEvents && s.hasTimeColumn && (s.isWeekView && s.cellOrSplitMinWidth || s.isDayView && s.hasSplits && i.minSplitWidth) ? (h(), H(l, J(Q({ key: 2 }, s.allDayBar)), { event: g(({ event: d, view: v }) => [w(e.$slots, "event", { view: v, event: d }, () => [s.editEvents.title && d.titleEditable ? (h(), c("div", { key: 0, class: "vuecal__event-title vuecal__event-title--edit", contenteditable: "", onBlur: (p) => s.onEventTitleBlur(p, d), innerHTML: d.title }, null, 40, Qe)) : d.title ? (h(), c("div", { key: 1, class: "vuecal__event-title", innerHTML: d.title }, null, 8, et)) : m("", !0), !d.content || s.hasShortEvents || s.isShortMonthView ? m("", !0) : (h(), c("div", { key: 2, class: "vuecal__event-content", innerHTML: d.content }, null, 8, tt))])]), _: 3 }, 16)) : m("", !0), k("div", { class: "vuecal__flex", ref: (d) => o.cellsEl = d, grow: "", wrap: !s.cellOrSplitMinWidth || !s.isWeekView, style: $(s.cellOrSplitMinWidth ? `min-width: ${s.cellOrSplitMinWidth}px` : "") }, [(h(!0), c(T, null, S(s.viewCells, (d, v) => (h(), H(r, { key: v, options: e.$props, "edit-events": s.editEvents, data: d, "cell-width": i.hideWeekdays.length && (s.isWeekView || s.isMonthView) && s.cellWidth, "min-timestamp": s.minTimestamp, "max-timestamp": s.maxTimestamp, "cell-splits": s.hasSplits && s.daySplits || [] }, { "cell-content": g(({ events: p, split: E, selectCell: _ }) => [w(e.$slots, "cell-content", { cell: d, view: o.view, goNarrower: _, events: p }, () => [E && !i.stickySplitLabels ? (h(), c("div", { key: 0, class: "split-label", innerHTML: E.label }, null, 8, st)) : m("", !0), d.content ? (h(), c("div", { key: 1, class: "vuecal__cell-date", innerHTML: d.content }, null, 8, nt)) : m("", !0), (s.isMonthView && !i.eventsOnMonthView || s.isYearsOrYearView && i.eventsCountOnYearView) && p.length ? (h(), c("div", at, [w(e.$slots, "events-count", { view: o.view, events: p }, () => [M(f(p.length), 1)])])) : m("", !0), !s.cellOrSplitHasEvents(p, E) && s.isWeekOrDayView ? (h(), c("div", lt, [w(e.$slots, "no-event", {}, () => [M(f(o.texts.noEvent), 1)])])) : m("", !0)])]), event: g(({ event: p, view: E }) => [w(e.$slots, "event", { view: E, event: p }, () => [s.editEvents.title && p.titleEditable ? (h(), c("div", { key: 0, class: "vuecal__event-title vuecal__event-title--edit", contenteditable: "", onBlur: (_) => s.onEventTitleBlur(_, p), innerHTML: p.title }, null, 40, ot)) : p.title ? (h(), c("div", { key: 1, class: "vuecal__event-title", innerHTML: p.title }, null, 8, rt)) : m("", !0), !i.time || p.allDay || s.isMonthView && (p.allDay || i.showAllDayEvents === "short") || s.isShortMonthView ? m("", !0) : (h(), c("div", dt, [M(f(o.utils.date.formatTime(p.start, s.TimeFormat)), 1), p.endTimeMinutes ? (h(), c("span", ut, "\xA0- " + f(o.utils.date.formatTime(p.end, s.TimeFormat, null, !0)), 1)) : m("", !0), p.daysCount > 1 && (p.segments[d.formattedDate] || {}).isFirstDay ? (h(), c("small", ht, "\xA0+" + f(p.daysCount - 1) + f((o.texts.day[0] || "").toLowerCase()), 1)) : m("", !0)])), !p.content || s.isMonthView && p.allDay && i.showAllDayEvents === "short" || s.isShortMonthView ? m("", !0) : (h(), c("div", { key: 3, class: "vuecal__event-content", innerHTML: p.content }, null, 8, ct))])]), "no-event": g(() => [w(e.$slots, "no-event", {}, () => [M(f(o.texts.noEvent), 1)])]), _: 2 }, 1032, ["options", "edit-events", "data", "cell-width", "min-timestamp", "max-timestamp", "cell-splits"]))), 128))], 12, it)], 10, Je)])], 2)]))]), _: 3 }, 8, ["name", "appear"]), o.ready ? m("", !0) : (h(), c("div", vt, mt))]))], 10, Fe);
+}]]);
+export {
+  Dt as default
+};

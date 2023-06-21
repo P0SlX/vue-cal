@@ -1,6 +1,93 @@
-var e=Object.defineProperty,t=(t,l,i)=>(((t,l,i)=>{l in t?e(t,l,{enumerable:!0,configurable:!0,writable:!0,value:i}):t[l]=i})(t,"symbol"!=typeof l?l+"":l,i),i)
+var S = Object.defineProperty;
+var V = (t, e, l) => e in t ? S(t, e, { enumerable: !0, configurable: !0, writable: !0, value: l }) : t[e] = l;
+var T = (t, e, l) => (V(t, typeof e != "symbol" ? e + "" : e, l), l);
 /**
   * vue-cal v4.8.1
   * (c) 2023 Antoni Andre <antoniandre.web@gmail.com>
   * @license MIT
-  */;let l=null,i=null,a={id:null,date:null},n=!1,r=!0,u={el:null,cell:null,timeout:null};const s={_eid:null,fromVueCal:null,toVueCal:null},c=class{constructor(e){t(this,"_vuecal"),this._vuecal=e}_getEventStart(e){const{timeStep:t,timeCellHeight:l,timeFrom:i,utils:a}=this._vuecal;let{y:n}=a.cell.getPosition(e);return n-=1*e.dataTransfer.getData("cursor-grab-at"),Math.round(n*t/parseInt(l)+i)}_updateEventStartEnd(e,t,l,i){const a=1*l.duration||t.endTimeMinutes-t.startTimeMinutes;let n=Math.max(this._getEventStart(e),0);if(this._vuecal.snapToTime){const e=n+this._vuecal.snapToTime/2;n=e-e%this._vuecal.snapToTime}t.startTimeMinutes=n,t.start=new Date(new Date(i).setMinutes(n)),t.endTimeMinutes=Math.min(n+a,1440),t.end=new Date(new Date(i).setMinutes(t.endTimeMinutes))}eventDragStart(e,t){if(3===e.target.nodeType)return e.preventDefault();e.dataTransfer.dropEffect="move",e.dataTransfer.setData("event",JSON.stringify(t)),e.dataTransfer.setData("cursor-grab-at",e.offsetY);const{clickHoldAnEvent:l}=this._vuecal.domEvents;setTimeout((()=>{l._eid=null,clearTimeout(l.timeoutId),t.deleting=!1}),0),this._vuecal.domEvents.dragAnEvent._eid=t._eid,s._eid=t._eid,s.fromVueCal=this._vuecal._.uid,t.dragging=!0,setTimeout((()=>t.draggingStatic=!0),0),n=!1,a={id:this._vuecal.view.id,date:this._vuecal.view.startDate},r=!0}eventDragEnd(e){this._vuecal.domEvents.dragAnEvent._eid=null,s._eid=null,e.dragging=!1,e.draggingStatic=!1;const{fromVueCal:t,toVueCal:l}=s;l&&t!==l&&this._vuecal.utils.event.deleteAnEvent(e),s.fromVueCal=null,s.toVueCal=null,n&&r&&a.id&&this._vuecal.switchView(a.id,a.date,!0)}cellDragEnter(e,t,l){const i=e.currentTarget;if(!e.currentTarget.contains(e.relatedTarget)){if(i===u.el||!i.className.includes("vuecal__cell-content"))return!1;u.el&&(u.cell.highlighted=!1),u={el:i,cell:t,timeout:clearTimeout(u.timeout)},t.highlighted=!0,["years","year","month"].includes(this._vuecal.view.id)&&(u.timeout=setTimeout((()=>this._vuecal.switchToNarrowerView(l)),2e3))}}cellDragOver(e,t,l,i){e.preventDefault(),t.highlighted=!0,(i||0===i)&&(t.highlightedSplit=i)}cellDragLeave(e,t){e.preventDefault(),!e.currentTarget.contains(e.relatedTarget)&&(t.highlightedSplit=!1,u.cell===t&&(clearTimeout(u.timeout),u={el:null,cell:null,timeout:null},t.highlighted=!1))}cellDragDrop(e,t,l,i){e.preventDefault(),clearTimeout(u.timeout),u={el:null,cell:null,timeout:null};const a=JSON.parse(e.dataTransfer.getData("event")||"{}");let n,c;if(s.fromVueCal!==this._vuecal._.uid){const{_eid:e,start:t,end:r,duration:u,...s}=a;n=this._vuecal.utils.event.createAnEvent(l,u,{...s,split:i})}else if(n=this._vuecal.view.events.find((e=>e._eid===s._eid)),n||(n=this._vuecal.mutableEvents.find((e=>e._eid===s._eid)),c=!!n),!n){const e=a.endTimeMinutes-a.startTimeMinutes,{start:t,end:r,...u}=a;n=this._vuecal.utils.event.createAnEvent(l,e,{...u,split:i})}const{start:d,split:o}=n;this._updateEventStartEnd(e,n,a,l),c&&this._vuecal.addEventsToView([n]),n.dragging=!1,(i||0===i)&&(n.split=i),t.highlighted=!1,t.highlightedSplit=null,r=!1,s.toVueCal=this._vuecal._.uid;const v={event:this._vuecal.cleanupEvent(n),oldDate:d,newDate:n.start,...(i||0===i)&&{oldSplit:o,newSplit:i},originalEvent:this._vuecal.cleanupEvent(a),external:!s.fromVueCal};this._vuecal.$emit("event-drop",v),this._vuecal.$emit("event-change",{event:v.event,originalEvent:v.originalEvent}),setTimeout((()=>{s._eid&&this.eventDragEnd(n)}),300)}viewSelectorDragEnter(e,t,a){e.currentTarget.contains(e.relatedTarget)||(a.highlightedControl=t,clearTimeout(l),l=setTimeout((()=>{if(["previous","next"].includes(t))this._vuecal[t](),clearInterval(i),i=setInterval(this._vuecal[t],800);else if("today"===t){let e;clearInterval(i),this._vuecal.view.id.includes("year")&&(e=this._vuecal.enabledViews.filter((e=>!e.includes("year")))[0]),this._vuecal.switchView(e||this._vuecal.view.id,new Date((new Date).setHours(0,0,0,0)),!0)}else this._vuecal.switchView(t,null,!0);n=!0}),800))}viewSelectorDragLeave(e,t,a){e.currentTarget.contains(e.relatedTarget)||a.highlightedControl===t&&(a.highlightedControl=null,l&&(l=clearTimeout(l)),i&&(i=clearInterval(i)))}};export{c as DragAndDrop};
+  */
+let o = null, c = null, v = { id: null, date: null }, _ = !1, m = !0, u = { el: null, cell: null, timeout: null };
+const r = { _eid: null, fromVueCal: null, toVueCal: null }, M = class {
+  constructor(t) {
+    T(this, "_vuecal");
+    this._vuecal = t;
+  }
+  _getEventStart(t) {
+    const { timeStep: e, timeCellHeight: l, timeFrom: i, utils: n } = this._vuecal;
+    let { y: a } = n.cell.getPosition(t);
+    return a -= 1 * t.dataTransfer.getData("cursor-grab-at"), Math.round(a * e / parseInt(l) + i);
+  }
+  _updateEventStartEnd(t, e, l, i) {
+    const n = 1 * l.duration || e.endTimeMinutes - e.startTimeMinutes;
+    let a = Math.max(this._getEventStart(t), 0);
+    if (this._vuecal.snapToTime) {
+      const d = a + this._vuecal.snapToTime / 2;
+      a = d - d % this._vuecal.snapToTime;
+    }
+    e.startTimeMinutes = a, e.start = new Date(new Date(i).setMinutes(a)), e.endTimeMinutes = Math.min(a + n, 1440), e.end = new Date(new Date(i).setMinutes(e.endTimeMinutes));
+  }
+  eventDragStart(t, e) {
+    if (t.target.nodeType === 3)
+      return t.preventDefault();
+    t.dataTransfer.dropEffect = "move", t.dataTransfer.setData("event", JSON.stringify(e)), t.dataTransfer.setData("cursor-grab-at", t.offsetY);
+    const { clickHoldAnEvent: l } = this._vuecal.domEvents;
+    setTimeout(() => {
+      l._eid = null, clearTimeout(l.timeoutId), e.deleting = !1;
+    }, 0), this._vuecal.domEvents.dragAnEvent._eid = e._eid, r._eid = e._eid, r.fromVueCal = this._vuecal._.uid, e.dragging = !0, setTimeout(() => e.draggingStatic = !0, 0), _ = !1, v = { id: this._vuecal.view.id, date: this._vuecal.view.startDate }, m = !0;
+  }
+  eventDragEnd(t) {
+    this._vuecal.domEvents.dragAnEvent._eid = null, r._eid = null, t.dragging = !1, t.draggingStatic = !1;
+    const { fromVueCal: e, toVueCal: l } = r;
+    l && e !== l && this._vuecal.utils.event.deleteAnEvent(t), r.fromVueCal = null, r.toVueCal = null, _ && m && v.id && this._vuecal.switchView(v.id, v.date, !0);
+  }
+  cellDragEnter(t, e, l) {
+    const i = t.currentTarget;
+    if (!t.currentTarget.contains(t.relatedTarget)) {
+      if (i === u.el || !i.className.includes("vuecal__cell-content"))
+        return !1;
+      u.el && (u.cell.highlighted = !1), u = { el: i, cell: e, timeout: clearTimeout(u.timeout) }, e.highlighted = !0, ["years", "year", "month"].includes(this._vuecal.view.id) && (u.timeout = setTimeout(() => this._vuecal.switchToNarrowerView(l), 2e3));
+    }
+  }
+  cellDragOver(t, e, l, i) {
+    t.preventDefault(), e.highlighted = !0, (i || i === 0) && (e.highlightedSplit = i);
+  }
+  cellDragLeave(t, e) {
+    t.preventDefault(), t.currentTarget.contains(t.relatedTarget) || (e.highlightedSplit = !1, u.cell === e && (clearTimeout(u.timeout), u = { el: null, cell: null, timeout: null }, e.highlighted = !1));
+  }
+  cellDragDrop(t, e, l, i) {
+    t.preventDefault(), clearTimeout(u.timeout), u = { el: null, cell: null, timeout: null };
+    const n = JSON.parse(t.dataTransfer.getData("event") || "{}");
+    let a, d;
+    if (r.fromVueCal !== this._vuecal._.uid) {
+      const { _eid: s, start: D, end: w, duration: g, ...E } = n;
+      a = this._vuecal.utils.event.createAnEvent(l, g, { ...E, split: i });
+    } else if (a = this._vuecal.view.events.find((s) => s._eid === r._eid), a || (a = this._vuecal.mutableEvents.find((s) => s._eid === r._eid), d = !!a), !a) {
+      const s = n.endTimeMinutes - n.startTimeMinutes, { start: D, end: w, ...g } = n;
+      a = this._vuecal.utils.event.createAnEvent(l, s, { ...g, split: i });
+    }
+    const { start: f, split: p } = a;
+    this._updateEventStartEnd(t, a, n, l), d && this._vuecal.addEventsToView([a]), a.dragging = !1, (i || i === 0) && (a.split = i), e.highlighted = !1, e.highlightedSplit = null, m = !1, r.toVueCal = this._vuecal._.uid;
+    const h = { event: this._vuecal.cleanupEvent(a), oldDate: f, newDate: a.start, ...(i || i === 0) && { oldSplit: p, newSplit: i }, originalEvent: this._vuecal.cleanupEvent(n), external: !r.fromVueCal };
+    this._vuecal.$emit("event-drop", h), this._vuecal.$emit("event-change", { event: h.event, originalEvent: h.originalEvent }), setTimeout(() => {
+      r._eid && this.eventDragEnd(a);
+    }, 300);
+  }
+  viewSelectorDragEnter(t, e, l) {
+    t.currentTarget.contains(t.relatedTarget) || (l.highlightedControl = e, clearTimeout(o), o = setTimeout(() => {
+      if (["previous", "next"].includes(e))
+        this._vuecal[e](), clearInterval(c), c = setInterval(this._vuecal[e], 800);
+      else if (e === "today") {
+        let i;
+        clearInterval(c), this._vuecal.view.id.includes("year") && (i = this._vuecal.enabledViews.filter((n) => !n.includes("year"))[0]), this._vuecal.switchView(i || this._vuecal.view.id, new Date(new Date().setHours(0, 0, 0, 0)), !0);
+      } else
+        this._vuecal.switchView(e, null, !0);
+      _ = !0;
+    }, 800));
+  }
+  viewSelectorDragLeave(t, e, l) {
+    t.currentTarget.contains(t.relatedTarget) || l.highlightedControl === e && (l.highlightedControl = null, o && (o = clearTimeout(o)), c && (c = clearInterval(c)));
+  }
+};
+export {
+  M as DragAndDrop
+};

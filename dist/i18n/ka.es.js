@@ -3,4 +3,20 @@
   * (c) 2023 Antoni Andre <antoniandre.web@gmail.com>
   * @license MIT
   */
-const a=["ორშაბათი","სამშაბათი","ოთხშაბათი","ხუთშაბათი","პარასკევი","შაბათი","კვირა"],e=["იანვარი","თებერვალი","მარტი","აპრილი","მაისი","ივნისი","ივლისი","აგვისტო","სექტემბერი","ოქტომბერი","ნოემბერი","დეკემბერი"],t="წლები",s="წელი",d="თვე",n="კვირა",o="დღე",y="დღეს",r="ღონისძიება არ არის",l="მთელი დღე",m="წაშლა",v="შექმენით ღონისძიება",E="dddd D MMMM YYYY",D={weekDays:a,months:e,years:t,year:s,month:"თვე",week:n,day:"დღე",today:y,noEvent:r,allDay:l,deleteEvent:m,createEvent:v,dateFormat:E};export{l as allDay,v as createEvent,E as dateFormat,o as day,D as default,m as deleteEvent,d as month,e as months,r as noEvent,y as today,n as week,a as weekDays,s as year,t as years};
+const a = ["\u10DD\u10E0\u10E8\u10D0\u10D1\u10D0\u10D7\u10D8", "\u10E1\u10D0\u10DB\u10E8\u10D0\u10D1\u10D0\u10D7\u10D8", "\u10DD\u10D7\u10EE\u10E8\u10D0\u10D1\u10D0\u10D7\u10D8", "\u10EE\u10E3\u10D7\u10E8\u10D0\u10D1\u10D0\u10D7\u10D8", "\u10DE\u10D0\u10E0\u10D0\u10E1\u10D9\u10D4\u10D5\u10D8", "\u10E8\u10D0\u10D1\u10D0\u10D7\u10D8", "\u10D9\u10D5\u10D8\u10E0\u10D0"], e = ["\u10D8\u10D0\u10DC\u10D5\u10D0\u10E0\u10D8", "\u10D7\u10D4\u10D1\u10D4\u10E0\u10D5\u10D0\u10DA\u10D8", "\u10DB\u10D0\u10E0\u10E2\u10D8", "\u10D0\u10DE\u10E0\u10D8\u10DA\u10D8", "\u10DB\u10D0\u10D8\u10E1\u10D8", "\u10D8\u10D5\u10DC\u10D8\u10E1\u10D8", "\u10D8\u10D5\u10DA\u10D8\u10E1\u10D8", "\u10D0\u10D2\u10D5\u10D8\u10E1\u10E2\u10DD", "\u10E1\u10D4\u10E5\u10E2\u10D4\u10DB\u10D1\u10D4\u10E0\u10D8", "\u10DD\u10E5\u10E2\u10DD\u10DB\u10D1\u10D4\u10E0\u10D8", "\u10DC\u10DD\u10D4\u10DB\u10D1\u10D4\u10E0\u10D8", "\u10D3\u10D4\u10D9\u10D4\u10DB\u10D1\u10D4\u10E0\u10D8"], t = "\u10EC\u10DA\u10D4\u10D1\u10D8", s = "\u10EC\u10D4\u10DA\u10D8", v = "\u10D7\u10D5\u10D4", d = "\u10D9\u10D5\u10D8\u10E0\u10D0", E = "\u10D3\u10E6\u10D4", n = "\u10D3\u10E6\u10D4\u10E1", o = "\u10E6\u10DD\u10DC\u10D8\u10E1\u10EB\u10D8\u10D4\u10D1\u10D0 \u10D0\u10E0 \u10D0\u10E0\u10D8\u10E1", y = "\u10DB\u10D7\u10D4\u10DA\u10D8 \u10D3\u10E6\u10D4", r = "\u10EC\u10D0\u10E8\u10DA\u10D0", l = "\u10E8\u10D4\u10E5\u10DB\u10D4\u10DC\u10D8\u10D7 \u10E6\u10DD\u10DC\u10D8\u10E1\u10EB\u10D8\u10D4\u10D1\u10D0", m = "dddd D MMMM YYYY", D = { weekDays: a, months: e, years: t, year: s, month: "\u10D7\u10D5\u10D4", week: d, day: "\u10D3\u10E6\u10D4", today: n, noEvent: o, allDay: y, deleteEvent: r, createEvent: l, dateFormat: m };
+export {
+  y as allDay,
+  l as createEvent,
+  m as dateFormat,
+  E as day,
+  D as default,
+  r as deleteEvent,
+  v as month,
+  e as months,
+  o as noEvent,
+  n as today,
+  d as week,
+  a as weekDays,
+  s as year,
+  t as years
+};

@@ -3,4 +3,20 @@
   * (c) 2023 Antoni Andre <antoniandre.web@gmail.com>
   * @license MIT
   */
-const a=["Mánudagur","Þriðjudagur","Miðvikudagur","Fimmtudagur","Föstudagur","Laugardagur","Sunnudagur"],e=["Janúar","Febrúar","Mars","Apríl","Maí","Júní","Júlí","Ágúst","September","Október","Nóvember","Desember"],r="Ár",t="Ár",n="Mánuður",s="Vika",u="Dagur",d="Í dag",g="Enginn atburður",y="Allan daginn",l="Eyða",o="Búðu til viðburð",m="dddd D MMMM YYYY",i={weekDays:a,months:e,years:"Ár",year:"Ár",month:n,week:s,day:u,today:d,noEvent:g,allDay:y,deleteEvent:l,createEvent:o,dateFormat:m};export{y as allDay,o as createEvent,m as dateFormat,u as day,i as default,l as deleteEvent,n as month,e as months,g as noEvent,d as today,s as week,a as weekDays,t as year,r as years};
+const a = ["M\xE1nudagur", "\xDEri\xF0judagur", "Mi\xF0vikudagur", "Fimmtudagur", "F\xF6studagur", "Laugardagur", "Sunnudagur"], e = ["Jan\xFAar", "Febr\xFAar", "Mars", "Apr\xEDl", "Ma\xED", "J\xFAn\xED", "J\xFAl\xED", "\xC1g\xFAst", "September", "Okt\xF3ber", "N\xF3vember", "Desember"], m = "\xC1r", o = "\xC1r", r = "M\xE1nu\xF0ur", t = "Vika", n = "Dagur", s = "\xCD dag", u = "Enginn atbur\xF0ur", d = "Allan daginn", g = "Ey\xF0a", l = "B\xFA\xF0u til vi\xF0bur\xF0", y = "dddd D MMMM YYYY", i = { weekDays: a, months: e, years: "\xC1r", year: "\xC1r", month: r, week: t, day: n, today: s, noEvent: u, allDay: d, deleteEvent: g, createEvent: l, dateFormat: y };
+export {
+  d as allDay,
+  l as createEvent,
+  y as dateFormat,
+  n as day,
+  i as default,
+  g as deleteEvent,
+  r as month,
+  e as months,
+  u as noEvent,
+  s as today,
+  t as week,
+  a as weekDays,
+  o as year,
+  m as years
+};

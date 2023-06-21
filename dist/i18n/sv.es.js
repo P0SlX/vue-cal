@@ -3,4 +3,20 @@
   * (c) 2023 Antoni Andre <antoniandre.web@gmail.com>
   * @license MIT
   */
-const a=["Måndag","Tisdag","Onsdag","Torsdag","Fredag","Lördag","Söndag"],e=["Januari","Februari","Mars","April","Maj","Juni","Juli","Augusti","September","Oktober","November","December"],s="År",t="År",d="Månad",r="Vecka",n="Dag",o="Idag",g="Ingen händelse",l="Heldag",y="Ta bort",m="Skapa händelse",D="dddd den D MMMM YYYY",M={weekDays:a,months:e,years:"År",year:"År",month:d,week:r,day:"Dag",today:o,noEvent:g,allDay:l,deleteEvent:y,createEvent:m,dateFormat:D};export{l as allDay,m as createEvent,D as dateFormat,n as day,M as default,y as deleteEvent,d as month,e as months,g as noEvent,o as today,r as week,a as weekDays,t as year,s as years};
+const a = ["M\xE5ndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "L\xF6rdag", "S\xF6ndag"], e = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"], y = "\xC5r", m = "\xC5r", s = "M\xE5nad", t = "Vecka", M = "Dag", d = "Idag", r = "Ingen h\xE4ndelse", n = "Heldag", o = "Ta bort", g = "Skapa h\xE4ndelse", l = "dddd den D MMMM YYYY", i = { weekDays: a, months: e, years: "\xC5r", year: "\xC5r", month: s, week: t, day: "Dag", today: d, noEvent: r, allDay: n, deleteEvent: o, createEvent: g, dateFormat: l };
+export {
+  n as allDay,
+  g as createEvent,
+  l as dateFormat,
+  M as day,
+  i as default,
+  o as deleteEvent,
+  s as month,
+  e as months,
+  r as noEvent,
+  d as today,
+  t as week,
+  a as weekDays,
+  m as year,
+  y as years
+};

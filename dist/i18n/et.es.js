@@ -3,4 +3,20 @@
   * (c) 2023 Antoni Andre <antoniandre.web@gmail.com>
   * @license MIT
   */
-const e=["Esmaspäev","Teisipäev","Kolmapäev","Neljapäev","Reede","Laupäev","Pühapäev"],a=["Jaanuar","Veebruar","Märts","Aprill","Mai","Juuni","Juuli","August","September","Oktoober","November","Detsember"],s="Aastad",t="Aasta",u="Kuu",d="Nädal",r="Päev",n="Täna",o="Sündmus puudub",v="Terve päev",l="Kustuta",m="Loo sündmus",y="dddd D MMMM YYYY",p={weekDays:e,months:a,years:s,year:t,month:"Kuu",week:d,day:r,today:n,noEvent:o,allDay:v,deleteEvent:l,createEvent:m,dateFormat:y};export{v as allDay,m as createEvent,y as dateFormat,r as day,p as default,l as deleteEvent,u as month,a as months,o as noEvent,n as today,d as week,e as weekDays,t as year,s as years};
+const e = ["Esmasp\xE4ev", "Teisip\xE4ev", "Kolmap\xE4ev", "Neljap\xE4ev", "Reede", "Laup\xE4ev", "P\xFChap\xE4ev"], a = ["Jaanuar", "Veebruar", "M\xE4rts", "Aprill", "Mai", "Juuni", "Juuli", "August", "September", "Oktoober", "November", "Detsember"], s = "Aastad", t = "Aasta", p = "Kuu", u = "N\xE4dal", d = "P\xE4ev", r = "T\xE4na", n = "S\xFCndmus puudub", o = "Terve p\xE4ev", v = "Kustuta", l = "Loo s\xFCndmus", m = "dddd D MMMM YYYY", y = { weekDays: e, months: a, years: s, year: t, month: "Kuu", week: u, day: d, today: r, noEvent: n, allDay: o, deleteEvent: v, createEvent: l, dateFormat: m };
+export {
+  o as allDay,
+  l as createEvent,
+  m as dateFormat,
+  d as day,
+  y as default,
+  v as deleteEvent,
+  p as month,
+  a as months,
+  n as noEvent,
+  r as today,
+  u as week,
+  e as weekDays,
+  t as year,
+  s as years
+};

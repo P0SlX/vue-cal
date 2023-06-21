@@ -3,4 +3,20 @@
   * (c) 2023 Antoni Andre <antoniandre.web@gmail.com>
   * @license MIT
   */
-const e=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],a=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],o="Años",s="Año",t="Mes",r="Semana",n="Día",d="Hoy",y="No hay evento",l="Todo el día",m="Borrar",i="Crear un evento",v="dddd D MMMM YYYY",M={weekDays:e,months:a,years:o,year:"Año",month:"Mes",week:r,day:"Día",today:"Hoy",noEvent:y,allDay:l,deleteEvent:m,createEvent:i,dateFormat:v};export{l as allDay,i as createEvent,v as dateFormat,n as day,M as default,m as deleteEvent,t as month,a as months,y as noEvent,d as today,r as week,e as weekDays,s as year,o as years};
+const e = ["Lunes", "Martes", "Mi\xE9rcoles", "Jueves", "Viernes", "S\xE1bado", "Domingo"], a = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], o = "A\xF1os", l = "A\xF1o", m = "Mes", s = "Semana", i = "D\xEDa", M = "Hoy", t = "No hay evento", r = "Todo el d\xEDa", n = "Borrar", d = "Crear un evento", y = "dddd D MMMM YYYY", v = { weekDays: e, months: a, years: o, year: "A\xF1o", month: "Mes", week: s, day: "D\xEDa", today: "Hoy", noEvent: t, allDay: r, deleteEvent: n, createEvent: d, dateFormat: y };
+export {
+  r as allDay,
+  d as createEvent,
+  y as dateFormat,
+  i as day,
+  v as default,
+  n as deleteEvent,
+  m as month,
+  a as months,
+  t as noEvent,
+  M as today,
+  s as week,
+  e as weekDays,
+  l as year,
+  o as years
+};

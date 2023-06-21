@@ -3,4 +3,20 @@
   * (c) 2023 Antoni Andre <antoniandre.web@gmail.com>
   * @license MIT
   */
-const a=["月","火","水","木","金","土","日"],e=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"],t="年",s="今年",d="月",n="週",o="日",y="今日",r="イベントなし",l="終日",m="削除",v="イベント作成",E="YYYY年 MMMM D日 (dddd)",D={weekDays:a,months:e,years:"年",year:"今年",month:"月",week:"週",day:"日",today:"今日",noEvent:r,allDay:"終日",deleteEvent:"削除",createEvent:v,dateFormat:E};export{l as allDay,v as createEvent,E as dateFormat,o as day,D as default,m as deleteEvent,d as month,e as months,r as noEvent,y as today,n as week,a as weekDays,s as year,t as years};
+const a = ["\u6708", "\u706B", "\u6C34", "\u6728", "\u91D1", "\u571F", "\u65E5"], e = ["1\u6708", "2\u6708", "3\u6708", "4\u6708", "5\u6708", "6\u6708", "7\u6708", "8\u6708", "9\u6708", "10\u6708", "11\u6708", "12\u6708"], n = "\u5E74", o = "\u4ECA\u5E74", y = "\u6708", r = "\u9031", l = "\u65E5", m = "\u4ECA\u65E5", t = "\u30A4\u30D9\u30F3\u30C8\u306A\u3057", v = "\u7D42\u65E5", E = "\u524A\u9664", s = "\u30A4\u30D9\u30F3\u30C8\u4F5C\u6210", d = "YYYY\u5E74 MMMM D\u65E5 (dddd)", D = { weekDays: a, months: e, years: "\u5E74", year: "\u4ECA\u5E74", month: "\u6708", week: "\u9031", day: "\u65E5", today: "\u4ECA\u65E5", noEvent: t, allDay: "\u7D42\u65E5", deleteEvent: "\u524A\u9664", createEvent: s, dateFormat: d };
+export {
+  v as allDay,
+  s as createEvent,
+  d as dateFormat,
+  l as day,
+  D as default,
+  E as deleteEvent,
+  y as month,
+  e as months,
+  t as noEvent,
+  m as today,
+  r as week,
+  a as weekDays,
+  o as year,
+  n as years
+};

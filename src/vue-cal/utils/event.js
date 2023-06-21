@@ -65,7 +65,7 @@ export default class EventUtils {
     if (!(dateTime instanceof Date)) return false
 
     const startTimeMinutes = ud.dateToMinutes(dateTime)
-    duration = duration * 1 || defaultEventDuration * 60
+    duration = duration || defaultEventDuration * 60
     const endTimeMinutes = startTimeMinutes + duration
     const end = ud.addMinutes(new Date(dateTime), duration)
 

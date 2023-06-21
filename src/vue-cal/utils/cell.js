@@ -19,7 +19,7 @@ export default class CellUtils {
    * Select a cell and go to narrower view on double click or single click according to vuecalProps option.
    *
    * @param {Boolean} force Force switching to narrower view.
-   * @param {Date} date The selected cell date at the exact time where it was clicked (through cursor coords).
+   * @param {Date} date The selected cell date at the exact time when it was clicked (through cursor coords).
    * @param {Integer} split The selected cell split if any.
    */
   selectCell = (force = false, date, split) => {

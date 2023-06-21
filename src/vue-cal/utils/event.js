@@ -353,25 +353,35 @@ export default class EventUtils {
     // | 1 | |_2_|  1 overlaps 2 & 3; 2 & 3 don't overlap;
     // |   |  ___   => streak = 2; each width = 50% not 33%.
     // |___| |_3_|
-    let longestStreak = 0
+    let longestStreak = 0;
+    const positions = new Map();
     for (const id in _cellOverlaps) {
-      const item = _cellOverlaps[id]
+      const item = _cellOverlaps[id];
 
       // Calculate the position of each event in current streak (determines the CSS left property).
       const overlapsRow = item.overlaps.map(id2 => ({
         id: id2, start: _cellOverlaps[id2].start, end: _cellOverlaps[id2].end
-      }))
-      overlapsRow.push({id, start: item.start, end: item.end})
+      }));
+
+      overlapsRow.push({id, start: item.start, end: item.end});
       overlapsRow.sort((a, b) => {
         // If both events have the same start and end, sort by id.
-        if (a.start.valueOf() === b.start.valueOf() && a.end.valueOf() === b.end.valueOf()) return a.id < b.id ? -1 : 1
+        if (a.start.valueOf() === b.start.valueOf() && a.end.valueOf() === b.end.valueOf()) return a.id < b.id ? -1 : 1;
 
         // Sort by start date, then by end date.
-        return a.start < b.start ? -1 : (a.start > b.start ? 1 : (a.end < b.end ? 1 : -1))
-      })
-      item.position = overlapsRow.findIndex(e => e.id === id)
+        return a.start < b.start ? -1 : (a.start > b.start ? 1 : (a.end < b.end ? 1 : -1));
+      });
 
-      longestStreak = Math.max(this.getOverlapsStreak(item, _cellOverlaps), longestStreak)
+      // If position is already set, it means this event is part of a previous streak.
+      const usedPositions = overlapsRow.map(overlap => positions.get(overlap.id)).filter(pos => pos !== undefined);
+      let position = 0;
+      while (usedPositions.includes(position)) {
+        position++;
+      }
+      positions.set(id, position);
+      item.position = position;
+
+      longestStreak = Math.max(this.getOverlapsStreak(item, _cellOverlaps), longestStreak);
     }
 
     return [_cellOverlaps, longestStreak]

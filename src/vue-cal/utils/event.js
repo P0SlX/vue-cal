@@ -47,7 +47,7 @@ export default class EventUtils {
     class: ''
   }
 
-  constructor (vuecal, dateUtils) {
+  constructor(vuecal, dateUtils) {
     this._vuecal = vuecal
     ud = dateUtils
   }
@@ -60,7 +60,7 @@ export default class EventUtils {
    * @param {Number} duration the event duration in minutes.
    * @param {Object} eventOptions some options to override the `eventDefaults` - optional.
    */
-  createAnEvent (dateTime, duration, eventOptions) {
+  createAnEvent(dateTime, duration, eventOptions) {
     if (typeof dateTime === 'string') dateTime = ud.stringToDate(dateTime)
     if (!(dateTime instanceof Date)) return false
 
@@ -82,8 +82,7 @@ export default class EventUtils {
       startTimeMinutes,
       end,
       endTimeMinutes,
-      segments: null,
-      ...eventOptions
+      segments: null, ...eventOptions
     }
 
     // If the onEventCreate() function is given as a parameter to vue-cal:
@@ -107,7 +106,7 @@ export default class EventUtils {
     this._vuecal.addEventsToView([event])
 
     this._vuecal.emitWithEvent('event-create', event)
-    this._vuecal.$emit('event-change', { event: this._vuecal.cleanupEvent(event), originalEvent: null })
+    this._vuecal.$emit('event-change', {event: this._vuecal.cleanupEvent(event), originalEvent: null})
 
     return event
   }
@@ -117,7 +116,7 @@ export default class EventUtils {
    *
    * @param {Object} e the multiple-day event to add segment in.
    */
-  addEventSegment (e) {
+  addEventSegment(e) {
     // If event was previously single-day, event.segments = null,
     // so first create the first segment (first day).
     if (!e.segments) {
@@ -137,8 +136,7 @@ export default class EventUtils {
     if (previousSegment) {
       previousSegment.isLastDay = false
       previousSegment.endTimeMinutes = minutesInADay
-    }
-    else {
+    } else {
       // @todo: when moving fast might lose the previousSegment.
       // Trying to update it would then result in an error, but do nothing would create a visual bug.
     }
@@ -148,11 +146,7 @@ export default class EventUtils {
     const formattedDate = ud.formatDateLite(start)
     start.setHours(0, 0, 0, 0)
     e.segments[formattedDate] = {
-      start,
-      startTimeMinutes: 0,
-      endTimeMinutes: e.endTimeMinutes,
-      isFirstDay: false,
-      isLastDay: true
+      start, startTimeMinutes: 0, endTimeMinutes: e.endTimeMinutes, isFirstDay: false, isLastDay: true
     }
 
     e.end = ud.addMinutes(start, e.endTimeMinutes)
@@ -166,7 +160,7 @@ export default class EventUtils {
    *
    * @param {Object} e the multiple-day event to remove segments from.
    */
-  removeEventSegment (e) {
+  removeEventSegment(e) {
     let segmentsCount = Object.keys(e.segments).length
     if (segmentsCount <= 1) return ud.formatDateLite(e.end)
 
@@ -186,8 +180,7 @@ export default class EventUtils {
       // Modify the new last segment.
       previousSegment.isLastDay = true
       previousSegment.endTimeMinutes = e.endTimeMinutes
-    }
-    else {
+    } else {
       // @todo: when moving fast might lose the previousSegment.
       // Trying to update it would then result in an error, but do nothing would create a visual bug.
     }
@@ -208,7 +201,7 @@ export default class EventUtils {
    * @param {Date} viewStartDate the starting date of the view.
    * @param {Date} viewEndDate the ending date of the view.
    */
-  createEventSegments (e, viewStartDate, viewEndDate) {
+  createEventSegments(e, viewStartDate, viewEndDate) {
     const viewStartTimestamp = viewStartDate.getTime()
     const viewEndTimestamp = viewEndDate.getTime()
     let eventStart = e.start.getTime()
@@ -226,17 +219,13 @@ export default class EventUtils {
     if (!e.repeat) { // Simple case first.
       timestamp = Math.max(viewStartTimestamp, eventStart)
       end = Math.min(viewEndTimestamp, eventEnd)
-    }
-    else {
+    } else {
       // Start at the beginning of the range, and end at soonest between `repeat.until` if any or range end.
       // This range will most likely be too large (e.g. whole week) and we need to narrow it
       // down in the while loop below.
       // We must not create unused segments, it would break the render or result in weird behaviors.
       timestamp = viewStartTimestamp
-      end = Math.min(
-        viewEndTimestamp,
-        e.repeat.until ? ud.stringToDate(e.repeat.until).getTime() : viewEndTimestamp
-      )
+      end = Math.min(viewEndTimestamp, e.repeat.until ? ud.stringToDate(e.repeat.until).getTime() : viewEndTimestamp)
     }
 
     while (timestamp <= end) {
@@ -269,8 +258,7 @@ export default class EventUtils {
         formattedDate = ud.formatDateLite(start)
         // We want to find any potential other repetition of event in same range.
         if (isLastDay) repeatedEventStartFound = false
-      }
-      else {
+      } else {
         createSegment = true
         isFirstDay = timestamp === eventStart
         isLastDay = end === eventEnd && nextMidnight > end
@@ -299,7 +287,7 @@ export default class EventUtils {
    *
    * @param {Object} event the calendar event to delete.
    */
-  deleteAnEvent (event) {
+  deleteAnEvent(event) {
     this._vuecal.emitWithEvent('event-delete', event)
 
     // Delete the event globally.
@@ -313,7 +301,7 @@ export default class EventUtils {
   // ===================================================================
   // Will recalculate all the overlaps of the current cell OR split.
   // cellEvents will contain only the current split events if in a split.
-  checkCellOverlappingEvents (cellEvents, options) {
+  checkCellOverlappingEvents(cellEvents, options) {
     _comparisonArray = cellEvents.slice(0)
     _cellOverlaps = {}
 
@@ -324,11 +312,18 @@ export default class EventUtils {
       // The array is smaller and smaller as we loop.
       _comparisonArray.shift()
 
-      if (!_cellOverlaps[e._eid]) _cellOverlaps[e._eid] = { overlaps: [], start: e.start, end: e.end, position: 0 }
+      if (!_cellOverlaps[e._eid]) {
+        _cellOverlaps[e._eid] = {
+          overlaps: [], start: e.start, end: e.end, position: 0
+        }
+      }
+
       _cellOverlaps[e._eid].position = 0
 
       _comparisonArray.forEach(e2 => {
-        if (!_cellOverlaps[e2._eid]) _cellOverlaps[e2._eid] = { overlaps: [], start: e2.start, end: e2.end, position: 0 }
+        if (!_cellOverlaps[e2._eid]) {
+          _cellOverlaps[e2._eid] = {overlaps: [], start: e2.start, end: e2.end, position: 0}
+        }
 
         const eventIsInRange = this.eventInRange(e2, e.start, e.end)
         const eventsInSameTimeStep = options.overlapsPerTimeStep ? ud.datesInSameTimeStep(e.start, e2.start, options.timeStep) : 1
@@ -344,8 +339,8 @@ export default class EventUtils {
         // Remove from the overlaps array if not overlapping or if 1 of the 2 events is background or all-day long.
         else {
           let pos1, pos2
-          if ((pos1 = (_cellOverlaps[e._eid] || { overlaps: [] }).overlaps.indexOf(e2._eid)) > -1) _cellOverlaps[e._eid].overlaps.splice(pos1, 1)
-          if ((pos2 = (_cellOverlaps[e2._eid] || { overlaps: [] }).overlaps.indexOf(e._eid)) > -1) _cellOverlaps[e2._eid].overlaps.splice(pos2, 1)
+          if ((pos1 = (_cellOverlaps[e._eid] || {overlaps: []}).overlaps.indexOf(e2._eid)) > -1) _cellOverlaps[e._eid].overlaps.splice(pos1, 1)
+          if ((pos2 = (_cellOverlaps[e2._eid] || {overlaps: []}).overlaps.indexOf(e._eid)) > -1) _cellOverlaps[e2._eid].overlaps.splice(pos2, 1)
           _cellOverlaps[e2._eid].position--
         }
       })
@@ -363,9 +358,17 @@ export default class EventUtils {
       const item = _cellOverlaps[id]
 
       // Calculate the position of each event in current streak (determines the CSS left property).
-      const overlapsRow = item.overlaps.map(id2 => ({ id: id2, start: _cellOverlaps[id2].start, end: _cellOverlaps[id2].end }))
-      overlapsRow.push({ id, start: item.start, end: item.end })
-      overlapsRow.sort((a, b) => a.start < b.start ? -1 : (a.start > b.start ? 1 : (a.end < b.end ? 1 : -1)))
+      const overlapsRow = item.overlaps.map(id2 => ({
+        id: id2, start: _cellOverlaps[id2].start, end: _cellOverlaps[id2].end
+      }))
+      overlapsRow.push({id, start: item.start, end: item.end})
+      overlapsRow.sort((a, b) => {
+        // If both events have the same start and end, sort by id.
+        if (a.start.valueOf() === b.start.valueOf() && a.end.valueOf() === b.end.valueOf()) return a.id < b.id ? -1 : 1
+
+        // Sort by start date, then by end date.
+        return a.start < b.start ? -1 : (a.start > b.start ? 1 : (a.end < b.end ? 1 : -1))
+      })
       item.position = overlapsRow.findIndex(e => e.id === id)
 
       longestStreak = Math.max(this.getOverlapsStreak(item, _cellOverlaps), longestStreak)
@@ -384,7 +387,7 @@ export default class EventUtils {
    * @param {Object} cellOverlaps An indexed array of all the events overlaps for the current cell.
    * @return {Number} The number of simultaneous event for this event.
    */
-  getOverlapsStreak (event, cellOverlaps = {}) {
+  getOverlapsStreak(event, cellOverlaps = {}) {
     let streak = event.overlaps.length + 1
     let removeFromStreak = []
     event.overlaps.forEach(id => {
@@ -409,14 +412,13 @@ export default class EventUtils {
    * @param {Date} end The end of range date object.
    * @return {Boolean} true if in range, even partially.
    */
-  eventInRange (event, start, end) {
+  eventInRange(event, start, end) {
     // Check if all-day or timeless event (if date but no time there won't be a `:` in event.start).
     if (event.allDay || !this._vuecal.time) {
       // Get the date and discard the time if any, then check it's within the date range.
       const startTimestamp = new Date(event.start).setHours(0, 0, 0, 0)
       const endTimestamp = new Date(event.end).setHours(23, 59, 0, 0)
-      return (endTimestamp >= new Date(start).setHours(0, 0, 0, 0) &&
-      startTimestamp <= new Date(end).setHours(0, 0, 0, 0))
+      return (endTimestamp >= new Date(start).setHours(0, 0, 0, 0) && startTimestamp <= new Date(end).setHours(0, 0, 0, 0))
     }
 
     const startTimestamp = event.start.getTime()
